@@ -77,7 +77,12 @@ p:last-child { margin-bottom: 0; }
 }
 .brand { display: inline-flex; align-items: center; gap: .5rem; color: var(--fg); text-decoration: none; font-weight: 800; font-size: 1.125rem; letter-spacing: -0.01em; }
 .brand svg { color: var(--accent); }
-.top-actions { display: flex; gap: .5rem; }
+.top-actions { display: flex; gap: .5rem; align-items: center; }
+.icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; background: var(--muted); color: var(--fg); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; }
+.icon-btn svg { width: 1.25rem; height: 1.25rem; }
+.icon-btn .sun { display: none; }
+:root[data-theme="dark"] .icon-btn .sun { display: block; }
+:root[data-theme="dark"] .icon-btn .moon { display: none; }
 
 .page { max-width: 44rem; margin: 0 auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.25rem; }
 .page-head { display: flex; flex-direction: column; gap: .25rem; }
