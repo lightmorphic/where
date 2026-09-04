@@ -1,0 +1,17 @@
+<ul class="bulk-rows" id="bulk-rows">
+  {% for n in names %}
+  <li class="bulk-row">
+    <input type="checkbox" name="keep" value="{{ loop.index0 }}" id="keep-{{ loop.index0 }}" checked aria-label="Keep {{ n }}">
+    <input type="text" name="name" value="{{ n }}" maxlength="120" aria-label="Item name">
+  </li>
+  {% endfor %}
+</ul>
+<button class="btn" type="button" id="bulk-add-row">Add another line</button>
+<label class="field-check">
+  <input type="checkbox" name="attach_photo" value="1" checked>
+  <span>Keep the tray photo on each item</span>
+</label>
+<div class="row-links">
+  <button class="btn primary big" type="submit">Save these to {{ place.name }}</button>
+  <button class="btn" type="submit" formaction="/bulk/{{ job.id }}/cancel">Discard</button>
+</div>

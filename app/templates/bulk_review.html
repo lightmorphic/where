@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% set nav = 'add' %}
+{% block title %}Check the list — Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{% if job.status == 'pending' %}Looking at the photo…{% elif job.status == 'failed' %}Could not read the photo{% else %}Check the list{% endif %}</h1>
+  <p class="hint">Going into <a href="/places/{{ place.id }}">{{ place.name }}</a></p>
+</div>
+
+<img class="bulk-photo" src="/photos/{{ job.photo }}" alt="The tray photo">
+
+{% if job.status == 'pending' %}
+<div class="panel empty" id="waiting" data-job="{{ job.id }}">
+  <p><span class="spinner" aria-hidden="true"></span> The model is working through the photo. On a small server this can take a minute or two. This page updates itself.</p>
+  {% if not model.ok %}<p class="hint">! {{ model.detail }}. It will carry on as soon as the model is reachable.</p>{% endif %}
+</div>
+<form action="/bulk/{{ job.id }}/cancel" method="post"><button class="btn" type="submit">Cancel</button></form>
+
+{% elif job.status == 'failed' %}
+<div class="panel empty"><p><strong>Sorry, that did not work.</strong> {{ job.error }}</p>
+<p class="hint">You can still add the items by hand below, or try again with a clearer photo.</p></div>
+<form class="panel" action="/bulk/{{ job.id }}/save" method="post" id="bulk-form">
+  {% include "_bulk_rows.html" %}
+</form>
+
+{% else %}
+<form class="panel" action="/bulk/{{ job.id }}/save" method="post" id="bulk-form">
+  <p class="hint">Untick anything that is wrong, fix any names, and add anything it missed.</p>
+  {% include "_bulk_rows.html" %}
+</form>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script>Where.bulkPage();</script>{% endblock %}

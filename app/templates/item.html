@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% set nav = 'home' %}
+{% block title %}{{ item.name }} — Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ item.name }}</h1>
+  <p class="hint">in <a href="/places/{{ item.place_id }}">{{ item.place_name }}</a>{% if item.gone %} · <span class="tag">gone</span>{% endif %}</p>
+</div>
+
+<form class="panel item-form" action="/items/{{ item.id }}/edit" method="post" enctype="multipart/form-data" id="item-form" data-item="{{ item.id }}" data-status="{{ item.desc_status }}">
+  <div class="photo-field">
+    <input id="photo" name="photo" type="file" accept="image/*" capture="environment" class="sr-only">
+    <label for="photo" class="photo-drop{% if item.photo %} has-photo{% endif %}" id="photo-drop">
+      <img id="photo-preview" src="{% if item.photo %}/photos/{{ item.photo }}{% endif %}" alt="{% if item.photo %}Photo of {{ item.name }}{% endif %}" {% if not item.photo %}hidden{% endif %}>
+      <span class="photo-cta">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <span>{% if item.photo %}Retake photo{% else %}Take a photo{% endif %}</span>
+      </span>
+    </label>
+  </div>
+
+  <label for="name">Name</label>
+  <input id="name" name="name" type="text" value="{{ item.name }}" maxlength="120" required>
+
+  <label for="description">Description
+    <span class="hint" id="desc-status">
+      {% if item.desc_status == 'pending' %}Describing photo…{% elif item.desc_status == 'failed' %}Could not describe the photo{% if not model.ok %} ({{ model.detail }}){% endif %}{% endif %}
+    </span>
+  </label>
+  <textarea id="description" name="description" rows="3" placeholder="What tells this one apart from others like it" maxlength="400">{{ item.description }}</textarea>
+
+  <label for="place_id">Place</label>
+  <select id="place_id" name="place_id">
+    {% for p in places %}<option value="{{ p.id }}" {% if p.id == item.place_id %}selected{% endif %}>{{ p.name }}</option>{% endfor %}
+  </select>
+
+  <label for="note">Note</label>
+  <textarea id="note" name="note" rows="2" placeholder="e.g. usually on the desk" maxlength="500">{{ item.note }}</textarea>
+
+  <button class="btn primary big" type="submit">Save changes</button>
+</form>
+
+<div class="panel">
+  <label class="switch">
+    <input type="checkbox" role="switch" id="gone" {% if item.gone %}checked{% endif %} data-url="/items/{{ item.id }}/gone">
+    <span class="track"></span>
+    <span>Gone: used up, thrown out or given away</span>
+  </label>
+  <p class="hint">Gone items drop out of lists and search but are kept, so the record stays honest.</p>
+</div>
+
+<div class="row-links">
+  {% if item.photo %}
+  <form action="/items/{{ item.id }}/describe" method="post"><button class="btn" type="submit" {% if item.desc_status == 'pending' %}disabled{% endif %}>Describe photo again</button></form>
+  {% endif %}
+  <form action="/items/{{ item.id }}/delete" method="post"><button class="btn danger two-step" type="submit" data-confirm="Yes, delete it" title="Delete this item for good. Press once, then once more to confirm.">Delete item</button></form>
+</div>
+{% endblock %}
+{% block scripts %}<script>Where.photoPreview('photo','photo-preview','photo-drop');Where.goneSwitch('gone');Where.watchDescription('item-form','description','desc-status');</script>{% endblock %}

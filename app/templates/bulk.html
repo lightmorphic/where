@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% set nav = 'add' %}
+{% block title %}Add lots from one photo — Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Add lots from one photo</h1>
+  <p class="hint">Photograph a whole tray or shelf. The app lists what it can see, you tick what to keep and fix any names, and they all go into that place at once.</p>
+</div>
+
+{% if not places %}
+<div class="panel empty"><p>Add a place first, from the <a href="/">Places</a> page.</p></div>
+{% else %}
+<form class="panel item-form" action="/bulk" method="post" enctype="multipart/form-data">
+  <div class="photo-field">
+    <input id="photo" name="photo" type="file" accept="image/*" capture="environment" class="sr-only" required>
+    <label for="photo" class="photo-drop" id="photo-drop">
+      <img id="photo-preview" alt="" hidden>
+      <span class="photo-cta">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <span>Photograph the tray</span>
+        <span class="hint">Spread things out a little so each one is visible.</span>
+      </span>
+    </label>
+  </div>
+  <label for="place_id">Everything goes into</label>
+  <select id="place_id" name="place_id" required>
+    {% for p in places %}<option value="{{ p.id }}" {% if p.id == selected %}selected{% endif %}>{{ p.name }}</option>{% endfor %}
+  </select>
+  <button class="btn primary big" type="submit">Find the items</button>
+</form>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script>Where.photoPreview('photo','photo-preview','photo-drop');</script>{% endblock %}

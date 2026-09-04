@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% set nav = 'add' %}
+{% block title %}Add item — Where{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Add item</h1></div>
+
+{% if saved %}
+<p class="saved-note">✓ Saved <a href="/items/{{ saved.id }}">{{ saved.name }}</a> to {{ saved.place_name }}. Add the next one.</p>
+{% endif %}
+
+{% if not places %}
+<form class="panel" action="/places" method="post">
+  <p>Items live in places, and there are none yet. Name the first one.</p>
+  <label for="place-name">Place</label>
+  <input id="place-name" name="name" type="text" placeholder="e.g. Tray 14" maxlength="60" required>
+  <input type="hidden" name="next" value="item">
+  <button class="btn primary" type="submit">Add place, then the item</button>
+</form>
+{% else %}
+<form class="panel item-form" action="/items" method="post" enctype="multipart/form-data">
+  <div class="photo-field">
+    <input id="photo" name="photo" type="file" accept="image/*" capture="environment" class="sr-only">
+    <label for="photo" class="photo-drop" id="photo-drop">
+      <img id="photo-preview" alt="" hidden>
+      <span class="photo-cta">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <span>Take a photo</span>
+        <span class="hint">Optional. The photo is used to write the description for you.</span>
+      </span>
+    </label>
+  </div>
+
+  <label for="name">Name</label>
+  <input id="name" name="name" type="text" placeholder="e.g. USB-C cable" maxlength="120" required autocomplete="off" {% if saved %}autofocus{% endif %}>
+
+  <label for="place_id">Place</label>
+  <select id="place_id" name="place_id" required>
+    {% for p in places %}<option value="{{ p.id }}" {% if p.id == selected %}selected{% endif %}>{{ p.name }}</option>{% endfor %}
+  </select>
+
+  <label for="note">Note <span class="hint">optional, for things that move about</span></label>
+  <textarea id="note" name="note" rows="2" placeholder="e.g. usually on the desk"></textarea>
+
+  <button class="btn primary big" type="submit">Save</button>
+</form>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script>Where.photoPreview('photo','photo-preview','photo-drop');</script>{% endblock %}

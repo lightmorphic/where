@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% set nav = 'home' %}
+{% block title %}Print labels — Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Print labels</h1>
+  <p class="hint">Pick the places you want labels for. Each label is sized for a 30 × 20 mm thermal label roll.</p>
+</div>
+{% if places %}
+<form class="panel" action="/labels" method="get" id="labels-form">
+  <div class="row-links">
+    <button class="btn" type="button" id="pick-all">Select all</button>
+    <button class="btn" type="button" id="pick-none">Select none</button>
+  </div>
+  <ul class="pick-list">
+    {% for p in places %}
+    <li><label class="field-check"><input type="checkbox" name="id" value="{{ p.id }}" checked> <span>{{ p.name }}</span></label></li>
+    {% endfor %}
+  </ul>
+  <button class="btn primary big" type="submit">Make the print sheet</button>
+</form>
+{% else %}
+<div class="panel empty"><p>No places to label yet.</p></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script>Where.pickAll('labels-form','pick-all','pick-none');</script>{% endblock %}

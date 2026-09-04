@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% set nav = 'home' %}
+{% block title %}{{ place.name }} — Where{% endblock %}
+{% block topactions %}
+<a class="btn small" href="/places/{{ place.id }}/label">Label</a>
+{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ place.name }}</h1>
+  <p class="hint">{{ items|length }} item{{ '' if items|length == 1 else 's' }}{% if gone %}, {{ gone|length }} gone{% endif %}</p>
+</div>
+
+<div class="row-links">
+  <a class="btn primary" href="/items/new?place={{ place.id }}">Add item here</a>
+  <a class="btn" href="/bulk?place={{ place.id }}">Add lots from one photo</a>
+</div>
+
+{% if items %}
+<ul class="item-list">
+  {% for i in items %}{% set show_place = false %}{% include "_item_row.html" %}{% endfor %}
+</ul>
+{% else %}
+<div class="panel empty"><p>Nothing here yet.</p></div>
+{% endif %}
+
+{% if gone %}
+<details class="gone-list">
+  <summary>Gone ({{ gone|length }})</summary>
+  <ul class="item-list">
+    {% for i in gone %}{% set show_place = false %}{% include "_item_row.html" %}{% endfor %}
+  </ul>
+</details>
+{% endif %}
+
+<details class="panel manage">
+  <summary>Rename or remove this place</summary>
+  <form action="/places/{{ place.id }}/rename" method="post">
+    <label for="rename">Name</label>
+    <div class="row">
+      <input id="rename" name="name" type="text" value="{{ place.name }}" maxlength="60" required>
+      <button class="btn" type="submit">Rename</button>
+    </div>
+  </form>
+  {% if items or gone %}
+  <p class="hint">A place can only be removed once it is empty. Move or delete its items first.</p>
+  {% else %}
+  <form action="/places/{{ place.id }}/delete" method="post" class="danger-form">
+    <button class="btn danger two-step" type="submit" data-confirm="Yes, remove it" title="Remove this place. Press once, then once more to confirm.">Remove place</button>
+  </form>
+  {% endif %}
+</details>
+{% endblock %}
