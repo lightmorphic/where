@@ -7,13 +7,14 @@ body { margin: 0; font-family: "Manrope", system-ui, sans-serif; background: #e4
 .toolbar button { font: inherit; font-weight: 700; padding: .5rem 1.25rem; border-radius: .75rem; border: 0; background: #fbc711; color: #645007; cursor: pointer; }
 .sheet { display: flex; flex-wrap: wrap; gap: 6mm; padding: 6mm; }
 .label {
-  width: 30mm; height: 20mm; background: #fff; display: flex; align-items: center; gap: 0.5mm;
+  flex: none; width: 30mm; height: 20mm; background: #fff; display: flex; align-items: center; gap: 0.5mm;
   padding: 1mm 1mm 1mm 0.5mm; overflow: hidden; page-break-after: always; break-after: page;
 }
 .qr { flex: none; width: 14mm; height: 14mm; }
 .qr svg { width: 100%; height: 100%; display: block; }
 .name { flex: 1; height: 18mm; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
-.name span { display: block; font-weight: 800; line-height: 1.05; font-size: 12pt; overflow-wrap: anywhere; letter-spacing: -0.02em; }
+.name span { display: block; font-weight: 800; line-height: 1.05; font-size: 12pt; overflow-wrap: normal; word-break: normal; letter-spacing: -0.02em; }
+@media screen { .label { zoom: 2.5; box-shadow: 0 1px 3px rgba(0,0,0,.2); } }
 @media print {
   @page { size: 30mm 20mm; margin: 0; }
   body { background: #fff; }

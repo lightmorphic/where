@@ -16,9 +16,11 @@ self.addEventListener('fetch', function (e) {
   if (req.method !== 'GET') return;
   var url = new URL(req.url);
   if (url.pathname.startsWith('/static/') || url.pathname.startsWith('/photos/')) {
+    // Serve from cache straight away, refresh the copy in the background.
     e.respondWith(caches.open(CACHE).then(function (c) {
       return c.match(req).then(function (hit) {
-        return hit || fetch(req).then(function (res) { if (res.ok) c.put(req, res.clone()); return res; });
+        var refresh = fetch(req).then(function (res) { if (res.ok) c.put(req, res.clone()); return res; });
+        return hit || refresh;
       });
     }));
     return;
