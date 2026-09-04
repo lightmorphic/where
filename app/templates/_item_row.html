@@ -1,0 +1,10 @@
+<li>
+  <a class="item-row{% if i.gone %} gone{% endif %}" href="/items/{{ i.id }}">
+    {% if i.photo %}<img class="thumb" src="/photos/{{ i.photo[:-4] }}_t.jpg" alt="" loading="lazy">{% else %}<span class="thumb none" aria-hidden="true"></span>{% endif %}
+    <span class="item-text">
+      <span class="item-name">{{ i.name }}{% if show_place is not defined or show_place %} <span class="dash">—</span> <span class="item-place">{{ i.place_name }}</span>{% endif %}{% if i.gone %} <span class="tag">gone</span>{% endif %}</span>
+      {% if i.description %}<span class="item-desc">{{ i.description }}</span>{% elif i.desc_status == 'pending' %}<span class="item-desc pending">Describing photo…</span>{% endif %}
+      {% if i.note %}<span class="item-note">{{ i.note }}</span>{% endif %}
+    </span>
+  </a>
+</li>

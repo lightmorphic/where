@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Labels — Where</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/labels.css') }}?v={{ app_version }}">
+</head>
+<body>
+<div class="toolbar">
+  <a href="javascript:history.back()">← Back</a>
+  <span>{{ places|length }} label{{ '' if places|length == 1 else 's' }}, 30 × 20 mm. Set the printer to the label size with no margins.</span>
+  <button type="button" onclick="window.print()">Print</button>
+</div>
+<div class="sheet">
+{% for p in places %}
+<div class="label">
+  <div class="qr">{{ qr_svg(place_url(p.id))|safe }}</div>
+  <div class="name"><span>{{ p.name }}</span></div>
+</div>
+{% endfor %}
+</div>
+<script src="{{ url_for('static', filename='js/labels.js') }}?v={{ app_version }}"></script>
+</body>
+</html>

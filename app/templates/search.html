@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% set nav = 'search' %}
+{% block title %}Search — Where{% endblock %}
+{% block content %}
+<form class="search-bar" action="/search" method="get" role="search">
+  <label class="sr-only" for="q">Search for an item</label>
+  <input id="q" name="q" type="search" value="{{ q }}" placeholder="What are you looking for?" autocomplete="off" enterkeyhint="search" autofocus>
+  <button class="btn primary" type="submit">Find</button>
+  {% if include_gone %}<input type="hidden" name="gone" value="1">{% endif %}
+</form>
+
+{% if q %}
+<div class="page-head">
+  <h1>{{ results|length }} result{{ '' if results|length == 1 else 's' }}</h1>
+  <p class="hint">for “{{ q }}” ·
+    {% if include_gone %}<a href="/search?q={{ q|urlencode }}">hide gone items</a>{% else %}<a href="/search?q={{ q|urlencode }}&gone=1">include gone items</a>{% endif %}
+  </p>
+</div>
+{% if results %}
+<ul class="item-list">
+  {% for i in results %}
+  {% include "_item_row.html" %}
+  {% endfor %}
+</ul>
+{% else %}
+<div class="panel empty"><p>Nothing matches. Try a different word, or a part of one.</p></div>
+{% endif %}
+{% else %}
+<div class="panel empty"><p>Type part of a name, a description, or a note. Results show the item and where it is.</p></div>
+{% endif %}
+{% endblock %}

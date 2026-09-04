@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% set nav = 'scan' %}
+{% block title %}Scan a label — Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Scan a label</h1>
+  <p class="hint">Point the camera at a place label and it opens.</p>
+</div>
+<div class="panel scan-panel">
+  <div class="viewfinder">
+    <video id="video" playsinline muted autoplay></video>
+    <canvas id="canvas" hidden></canvas>
+    <div class="frame" aria-hidden="true"></div>
+  </div>
+  <p id="scan-status" class="hint" aria-live="polite">Starting camera…</p>
+  <button class="btn" type="button" id="scan-start" hidden>Start camera</button>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jsQR.js') }}"></script>
+<script src="{{ url_for('static', filename='js/scan.js') }}?v={{ app_version }}"></script>
+{% endblock %}

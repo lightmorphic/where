@@ -1,0 +1,25 @@
+services:
+  where:
+    image: ghcr.io/lightmorphic/where:latest
+    container_name: where
+    restart: unless-stopped
+    ports:
+      - "${WHERE_PORT:-4150}:8080"
+    volumes:
+      - ${WHERE_DATA:-/opt/where}/data:/data
+    environment:
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-moondream}
+      WHERE_PUBLIC_URL: ${WHERE_PUBLIC_URL:-}
+      TZ: ${TZ:-Europe/London}
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: where-ollama
+    restart: unless-stopped
+    volumes:
+      - ${WHERE_DATA:-/opt/where}/ollama:/root/.ollama
+    environment:
+      OLLAMA_KEEP_ALIVE: "10m"

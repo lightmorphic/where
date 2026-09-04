@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% set nav = 'home' %}
+{% block content %}
+<form class="search-bar" action="/search" method="get" role="search">
+  <label class="sr-only" for="q">Search for an item</label>
+  <input id="q" name="q" type="search" placeholder="What are you looking for?" autocomplete="off" enterkeyhint="search">
+  <button class="btn primary" type="submit">Find</button>
+</form>
+
+<div class="page-head">
+  <h1>Places</h1>
+  <p class="hint">{{ totals['items'] }} item{{ '' if totals['items'] == 1 else 's' }} in {{ totals['places'] }} place{{ '' if totals['places'] == 1 else 's' }}{% if totals['gone'] %}, {{ totals['gone'] }} gone{% endif %}</p>
+</div>
+
+{% if places %}
+<ul class="place-list">
+  {% for p in places %}
+  <li><a class="place-row" href="/places/{{ p.id }}">
+    <span class="place-name">{{ p.name }}</span>
+    <span class="count">{{ p.item_count }}</span>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+  </a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="panel empty">
+  <p><strong>No places yet.</strong> A place is anywhere you keep things: a cupboard, a shelf, a box, a numbered tray. Add the first one below.</p>
+</div>
+{% endif %}
+
+<form class="panel inline-add" action="/places" method="post">
+  <label for="place-name">New place</label>
+  <div class="row">
+    <input id="place-name" name="name" type="text" placeholder="e.g. Tray 14" maxlength="60" required autocomplete="off">
+    <button class="btn" type="submit">Add place</button>
+  </div>
+</form>
+
+<div class="row-links">
+  <a class="btn" href="/labels">Print labels</a>
+  <a class="btn" href="/bulk">Add lots from one photo</a>
+</div>
+
+<p class="hint status-line">
+  {% if model.ok %}✓ Photo descriptions on ({{ model.detail or 'model ready' }}){% else %}! Photo descriptions off: {{ model.detail or 'model not ready' }}. Items still save; descriptions fill in once it is back.{% endif %}
+</p>
+{% endblock %}
