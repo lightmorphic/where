@@ -187,6 +187,7 @@ input[type="checkbox"], input[type="radio"] { width: 1.25rem; height: 1.25rem; f
   background: var(--muted); cursor: pointer; text-align: center;
 }
 .photo-drop:hover { border-color: var(--muted-fg); }
+.photo-drop img[hidden] { display: none; }
 .photo-drop img { display: block; width: 100%; max-height: 22rem; object-fit: contain; background: var(--muted); }
 .photo-drop .photo-cta { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: 1.25rem; font-weight: 600; color: var(--muted-fg); }
 .photo-drop.has-photo { border-style: solid; }
