@@ -47,12 +47,20 @@ def _get(path, timeout=5):
         return json.loads(resp.read().decode())
 
 
-def generate(prompt, image_path):
+def generate(prompt, image_path, max_tokens=80):
     with open(image_path, "rb") as f:
         image_b64 = base64.b64encode(f.read()).decode()
     out = _post(
         "/api/generate",
-        {"model": config.OLLAMA_MODEL, "prompt": prompt, "images": [image_b64], "stream": False},
+        {
+            "model": config.OLLAMA_MODEL,
+            "prompt": prompt,
+            "images": [image_b64],
+            "stream": False,
+            # Small models happily ramble in circles; cap the length and keep
+            # the sampling tight so the answer stays factual.
+            "options": {"num_predict": max_tokens, "temperature": 0.2, "repeat_penalty": 1.3},
+        },
         timeout=config.OLLAMA_TIMEOUT,
     )
     return (out.get("response") or "").strip()
@@ -90,11 +98,37 @@ def status(max_age=30):
 
 # ---- clean-up of model output ----
 
+LEAD_IN = re.compile(
+    r"^(the|this)\s+(image|photo|picture)\s+(shows|is of|depicts|contains)\s+(an?\s+)?",
+    re.I,
+)
+
+
 def clean_sentence(text):
     text = re.sub(r"\s+", " ", text).strip()
-    if text.lower().startswith(("the image shows", "this image shows", "the photo shows", "this photo shows")):
-        text = text.split(" ", 3)[-1]
-    return text[:400]
+    text = LEAD_IN.sub("", text)
+    text = dedupe_fragments(text)
+    text = text.strip(" ,;.")
+    if len(text) > 300:
+        # Cut at the last whole word rather than mid-word.
+        text = text[:300].rsplit(" ", 1)[0].rstrip(" ,;")
+    if text:
+        text = text[0].upper() + text[1:]
+    return text
+
+
+def dedupe_fragments(text):
+    """Small models loop: "black, right-angle, black, right-angle, ...".
+    Keep the first appearance of each comma-separated fragment."""
+    parts = [p.strip() for p in text.split(",")]
+    out, seen = [], set()
+    for p in parts:
+        key = p.lower().rstrip(".")
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(p)
+    return ", ".join(out)
 
 
 def parse_list(text):
@@ -156,7 +190,7 @@ def _bulk(job_id):
         return
     try:
         ensure_model()
-        names = parse_list(generate(BULK_PROMPT, photos.path(job["photo"])))
+        names = parse_list(generate(BULK_PROMPT, photos.path(job["photo"]), max_tokens=300))
         with db.db() as conn:
             db.finish_bulk_job(conn, job_id, result="\n".join(names))
     except Exception as exc:
