@@ -1,0 +1,68 @@
+# Where
+
+> A self-hosted web app that remembers which cupboard, shelf, box or tray each
+> thing in your home is in. Photograph an item, type its name, and a vision
+> model running on your own server writes the detail that tells it apart from
+> the near-identical ones. Free and open source under the GPL version 3.
+> Currently in beta.
+
+Where is made by Lightmorphic Ltd (Mildenhall, England) and given away. There
+is no hosted version, no account and no paid tier. You run it yourself with
+Docker on your own machine.
+
+## What it does
+
+- **Places**: a flat list of names, such as "Cupboard 1", "Top shelf",
+  "Storage box", "Tray 14". No nesting and no hierarchy.
+- **Items**: each belongs to exactly one place and holds a photograph, a name,
+  a description, a free-text note, and a "gone" flag for things used up or
+  thrown out.
+- **Automatic descriptions**: the photograph is sent to Ollama running on the
+  same server, and the model writes the distinguishing detail, for example
+  "black, right-angle plug, about a metre". Generation never blocks saving; if
+  the model is unreachable the item still saves. Any description can be edited
+  and a hand edit is never overwritten.
+- **Bulk add from one photograph**: photograph a whole tray, the model returns
+  a list of the objects it can see, and the user ticks, corrects and saves them
+  all into that place at once.
+- **QR labels**: one per place, laid out for 30 x 20 mm thermal label rolls.
+  Scanning a label opens that place. Several places can be printed as one sheet.
+- **Search**: across item name, description and note. Results read
+  "USB-C cable — Tray 14".
+- **Phone first**: installable to the home screen as a progressive web app,
+  with camera capture and in-browser QR scanning. Camera access requires https.
+
+## What it deliberately does not do
+
+No prices, purchase dates, suppliers, receipts, warranties, quantities,
+categories, tags, multiple users, nested locations, lending records or barcode
+lookup against retail databases. It is not an inventory or insurance system.
+
+## Privacy
+
+Nothing leaves the user's server. The vision model runs locally through Ollama.
+No cloud AI provider is involved and there is no API key to supply. The website
+sets no cookies and carries no analytics; the app sets no cookies either.
+
+## Running it
+
+Docker, two containers (the app and Ollama), one bind-mounted folder holding a
+SQLite database and the photographs. Every setting lives in a `.env` file: port,
+data path, Ollama address, model name, public URL and timezone. The default
+model is `moondream`, about 1.7 GB, which runs on a small machine with no
+graphics card; `minicpm-v` does the bulk tray listing better if there is memory
+for it.
+
+## Built with
+
+Python, Flask, SQLite, Pillow, qrcode and waitress. Plain CSS, no framework and
+no build step.
+
+## Links
+
+- Site: https://where.lightmorphic.com/
+- Source: https://github.com/lightmorphic/where
+- Changelog: https://github.com/lightmorphic/where/blob/main/CHANGELOG.md
+- Issues: https://github.com/lightmorphic/where/issues
+- Licence: GPL-3.0
+- Contact: hello@lightmorphic.co.uk
