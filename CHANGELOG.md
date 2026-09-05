@@ -2,6 +2,10 @@
 
 All notable changes to Where are recorded here.
 
+## [0.2.2] — 2026-09-05
+
+- **`docker compose up -d` now works on a fresh machine with nothing else to do.** The container starts as root only long enough to hand its data folder to the unprivileged user it runs as, then gives up root for good before serving anything. No folders to make in advance, no `chown`, and deleting the data folder no longer leaves the app unable to start. Add `user: "1000:1000"` to the service if you would rather it never started as root.
+
 ## [0.2.1] — 2026-09-05
 
 - If Where cannot write to its data folder it now says so in one readable line, names the user it runs as, and gives you the command to fix it, instead of repeating a stack trace until you give up. This is what happens when the folder on the host belongs to root, which is what Docker does if you delete it.

@@ -33,7 +33,12 @@ COPY run.py VERSION ./
 
 RUN mkdir -p /data && chown -R 1000:1000 /data /app
 
-USER 1000
+# Deliberately no USER line. The container starts as root, hands /data to user
+# 1000 if a fresh bind mount arrived owned by somebody else, and then drops to
+# user 1000 for good before it serves anything (see app/bootstrap.py). That is
+# what lets "docker compose up -d" work on a new host with no chown first.
+# Setting `user: "1000:1000"` in compose also works: the handover is skipped
+# and the folder has to be owned correctly already.
 EXPOSE 8080
 
 HEALTHCHECK --interval=60s --timeout=10s --start-period=20s --retries=3 \

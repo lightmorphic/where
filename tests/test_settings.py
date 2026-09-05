@@ -1,3 +1,5 @@
+import os
+
 from app import db, settings, vision
 
 
@@ -77,3 +79,39 @@ def test_a_data_folder_it_cannot_write_to_says_what_to_do(tmp_path, monkeypatch,
     assert "cannot write to its data folder" in message
     assert "chown" in message
     locked.chmod(0o755)
+
+
+def test_an_ordinary_user_is_left_alone(tmp_path):
+    """Outside Docker the app is not root, so start-up must change nothing."""
+    from app import bootstrap
+    folder = tmp_path / "data"
+    assert bootstrap.prepare(str(folder)) is None
+    assert not folder.exists()
+
+
+def test_the_handover_is_skipped_when_the_folder_is_already_right(tmp_path, monkeypatch):
+    from app import bootstrap
+    folder = tmp_path / "data"
+    folder.mkdir()
+    exists_before = folder.exists()
+    dropped = []
+    monkeypatch.setattr(bootstrap.os, "geteuid", lambda: 0)
+    monkeypatch.setattr(bootstrap, "owner_uid", lambda p: 1000)
+    monkeypatch.setattr(bootstrap, "_chown_tree", lambda p: dropped.append("chown"))
+    monkeypatch.setattr(bootstrap, "drop_privileges", lambda: dropped.append("drop"))
+    assert bootstrap.prepare(str(folder)) is None
+    assert dropped == ["drop"] and exists_before
+
+
+def test_a_root_owned_folder_is_handed_over_then_root_is_given_up(tmp_path, monkeypatch):
+    from app import bootstrap
+    folder = tmp_path / "data"
+    done = []
+    monkeypatch.setattr(bootstrap.os, "geteuid", lambda: 0)
+    monkeypatch.setattr(bootstrap, "owner_uid", lambda p: 0)
+    monkeypatch.setattr(bootstrap, "_chown_tree", lambda p: done.append("chown"))
+    monkeypatch.setattr(bootstrap, "drop_privileges", lambda: done.append("drop"))
+    note = bootstrap.prepare(str(folder))
+    assert done == ["chown", "drop"]
+    assert "user 1000" in note
+    assert os.path.isdir(folder)
