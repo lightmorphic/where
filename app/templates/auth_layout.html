@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}Where{% endblock %}</title>
+<meta name="theme-color" content="#09090b">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="{{ url_for('static', filename='icons/icon.svg') }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v={{ app_version }}">
+<script>(function(){var t='dark';try{t=localStorage.getItem('theme')||'dark';}catch(e){}document.documentElement.dataset.theme=t;})();</script>
+</head>
+<body class="plain">
+<main class="page gate">
+  <div class="gate-brand">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <span>Where</span>
+  </div>
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

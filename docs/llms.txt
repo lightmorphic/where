@@ -31,27 +31,34 @@ Docker on your own machine.
   "USB-C cable — Tray 14".
 - **Phone first**: installable to the home screen as a progressive web app,
   with camera capture and in-browser QR scanning. Camera access requires https.
+- **Accounts**: everyone signs in with their own name and password and shares
+  one list of places and items. The first account created administers the copy.
+  Self-service sign-up is off by default.
 
 ## What it deliberately does not do
 
 No prices, purchase dates, suppliers, receipts, warranties, quantities,
-categories, tags, multiple users, nested locations, lending records or barcode
-lookup against retail databases. It is not an inventory or insurance system.
+categories, tags, nested locations, lending records or barcode lookup against
+retail databases. It is not an inventory or insurance system. Accounts exist so
+a household can share one list, not so each person can keep a separate one.
 
 ## Privacy
 
 Nothing leaves the user's server. The vision model runs locally through Ollama.
 No cloud AI provider is involved and there is no API key to supply. The website
-sets no cookies and carries no analytics; the app sets no cookies either.
+sets no cookies and carries no analytics. The app sets one cookie, which keeps
+you signed in on your own server.
 
 ## Running it
 
 Docker, two containers (the app and Ollama), one bind-mounted folder holding a
-SQLite database and the photographs. Every setting lives in a `.env` file: port,
-data path, Ollama address, model name, public URL and timezone. The default
-model is `moondream`, about 1.7 GB, which runs on a small machine with no
-graphics card; `minicpm-v` does the bulk tray listing better if there is memory
-for it.
+SQLite database, the photographs and the session key. There is no `.env` file
+and no configuration in the compose file beyond the published port and that
+folder: the model, its address, the timeout, the address printed into QR labels
+and whether strangers may sign up are all on the Settings page inside the app.
+The default model is `moondream`, about 1.7 GB, which runs on a small machine
+with no graphics card; `minicpm-v` does the bulk tray listing better if there is
+memory for it.
 
 ## Built with
 

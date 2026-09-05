@@ -36,13 +36,19 @@
       "operatingSystem": "Linux, via Docker",
       "description": "A self-hosted web app that records which cupboard, shelf, box or tray each thing in your home is in. Photographs are described by a vision model running on your own server, places get printable QR labels, and searching returns the item and where it is.",
       "license": "https://www.gnu.org/licenses/gpl-3.0.html",
-      "softwareVersion": "0.1.4",
+      "softwareVersion": "0.2.0",
       "releaseNotes": "https://github.com/lightmorphic/where/blob/main/CHANGELOG.md",
       "codeRepository": "https://github.com/lightmorphic/where",
       "programmingLanguage": "Python",
       "isAccessibleForFree": true,
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
-      "author": { "@id": "https://lightmorphic.com/#organisation" }
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "GBP"
+      },
+      "author": {
+        "@id": "https://lightmorphic.com/#organisation"
+      }
     },
     {
       "@type": "Organization",
@@ -69,7 +75,9 @@
           "email": "privacy@lightmorphic.com"
         }
       ],
-      "sameAs": ["https://github.com/lightmorphic"]
+      "sameAs": [
+        "https://github.com/lightmorphic"
+      ]
     },
     {
       "@type": "FAQPage",
@@ -77,42 +85,82 @@
         {
           "@type": "Question",
           "name": "Is Where finished?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. It is in beta. Everything described here works, but it is early software that has not yet been used for long by many people. Expect rough edges, and keep a copy of your data directory." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It is in beta. Everything described here works, but it is early software that has not yet been used for long by many people. Expect rough edges, and keep a copy of your data directory."
+          }
         },
         {
           "@type": "Question",
           "name": "Does Where send my photographs anywhere?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. Photographs are stored in a folder on your own server and described by Ollama, which also runs on your server. Nothing is sent to a cloud service and there is no account to make." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Photographs are stored in a folder on your own server and described by Ollama, which also runs on your server. Nothing is sent to a cloud service and there is no account to make."
+          }
         },
         {
           "@type": "Question",
           "name": "What happens if the vision model is switched off?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Items still save immediately. Only the automatic description is missing, and you can type one yourself or ask for it again later. Saving never waits for the model." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Items still save immediately. Only the automatic description is missing, and you can type one yourself or ask for it again later. Saving never waits for the model."
+          }
         },
         {
           "@type": "Question",
           "name": "What size are the QR labels?",
-          "acceptedAnswer": { "@type": "Answer", "text": "30 by 20 millimetres, which is a common thermal label roll size, the sort sold for Amazon FBA. Each label is one page, so set the printer to that paper size with no margins. You can print one label or a whole batch." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "30 by 20 millimetres, which is a common thermal label roll size, the sort sold for Amazon FBA. Each label is one page, so set the printer to that paper size with no margins. You can print one label or a whole batch."
+          }
         },
         {
           "@type": "Question",
           "name": "Can I use it on my phone?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes, that is the main way. It is a web app you can add to your phone's home screen. The camera opens straight from the add form, and scanning a place label with the camera opens that place. Camera access needs the app to be reached over https." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, that is the main way. It is a web app you can add to your phone's home screen. The camera opens straight from the add form, and scanning a place label with the camera opens that place. Camera access needs the app to be reached over https."
+          }
         },
         {
           "@type": "Question",
           "name": "What hardware does it need?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The app itself is tiny. The vision model is the demanding part. Moondream is the default because it runs on a small machine with no graphics card, using about two and a half gigabytes of memory. A description takes a minute or two on a modest processor, which is why it happens in the background." }
-        },
-        {
-          "@type": "Question",
-          "name": "Where is my data kept?",
-          "acceptedAnswer": { "@type": "Answer", "text": "In one folder on your own server. A single SQLite database and a folder of photographs. Copy that folder and you have everything." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The app itself is tiny. The vision model is the demanding part. Moondream is the default because it runs on a small machine with no graphics card, using about two and a half gigabytes of memory. A description takes a minute or two on a modest processor, which is why it happens in the background."
+          }
         },
         {
           "@type": "Question",
           "name": "What does it cost?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Nothing. It is released under the GNU General Public Licence version 3. There is no paid tier and no hosted version to buy." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nothing. It is released under the GNU General Public Licence version 3. There is no paid tier and no hosted version to buy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can more than one person use it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Everyone signs in with their own name and password and sees the same places and items, because two people in the same house need to find the same cable. The first account made runs the place: it changes the settings and adds everyone else. New accounts are closed to strangers unless you turn them on."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where do I configure it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On the Settings page inside the app. The model, its address, how long to wait for a photograph, the address printed into QR labels and who may sign in are all there. There is no .env file, and the only things in the compose file are the port to open it on and the folder your data lives in."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where is my data kept?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In one folder on your own server: a single SQLite database, a folder of photographs and the key that keeps people signed in. Copy that folder and you have everything."
+          }
         }
       ]
     }
@@ -132,6 +180,7 @@
     <nav aria-label="Main">
       <a href="#adding">Adding</a>
       <a href="#labels">Labels</a>
+      <a href="#accounts">Accounts</a>
       <a href="#privacy">Privacy</a>
       <a href="#install">Install</a>
       <a href="https://github.com/lightmorphic/where">Source</a>
@@ -311,6 +360,70 @@
   </div>
 </section>
 
+<section id="accounts" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>One house, one list, a login each</h2>
+      <p>
+        Two people in the same kitchen need to find the same cable, so everyone
+        signs in with their own name and password and sees the same cupboards.
+        There is no per-person inventory to keep in step.
+      </p>
+    </div>
+    <div class="feature-lead">
+      <div>
+        <p>
+          The first account you make runs the copy. It changes the settings and
+          adds everyone else. New accounts are closed to strangers until you
+          decide otherwise, so handing the address to a visitor does not let
+          them sign themselves up.
+        </p>
+        <p>
+          Nothing is recorded about who did what. Where does not keep who added
+          an item, when anyone signed in or what anyone searched for. It asks
+          for a name and a password and no email address.
+        </p>
+      </div>
+      <figure class="phone">
+        <div class="shot">
+          <img src="images/where-login.webp"
+               alt="The Where sign-in screen, with a name field, a password field and a Sign in button, under a line saying everyone signed in shares the same places and items."
+               width="840" height="1240" loading="lazy" decoding="async">
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="settings">
+  <div class="wrap">
+    <div class="feature-lead flip">
+      <figure>
+        <div class="shot">
+          <img src="images/where-accounts.webp"
+               alt="The accounts part of the Where settings page. A switch to let anyone reaching the app make their own account, a list showing charlie who runs this copy and sam, with a Remove button, and an Add someone section."
+               width="840" height="840" loading="lazy" decoding="async">
+        </div>
+      </figure>
+      <div>
+        <h2>Nothing to configure outside the app</h2>
+        <p>
+          There is no settings file to write and nothing to change in the
+          compose file. Which model to use, where it lives, how long to wait for
+          a photograph, the address printed into your labels and who is allowed
+          in are all on one Settings page.
+        </p>
+        <p>
+          The compose file keeps two lines that genuinely cannot live inside a
+          running container: the port to open the app on, and the folder your
+          data lives in. Everything else you change in a browser, and it takes
+          effect without a restart.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="band">
   <div class="wrap">
     <div class="section-head">
@@ -325,9 +438,9 @@
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>A place is a name.</b> Cupboard 1, Top shelf, Storage box, Tray 14. No rooms, no nesting, no hierarchy to maintain.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>An item is a photograph, a name and a place.</b> Plus a description you did not have to write, and a note for things that wander, like &ldquo;usually on the desk&rdquo;.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>Used up or thrown out becomes one switch.</b> The item drops out of lists and searches but is kept, so the record stays honest instead of quietly wrong.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One household, one list.</b> Everyone signs in with their own name and password and sees the same places and items, because two people in the same house need to find the same cable.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No value, purchase date, supplier, receipt, warranty or quantity.</b> This is not an insurance record and it will not become one.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No categories and no tags.</b> Search reads the name, the description and the note, which is what you would have typed into a tag anyway.</span></li>
-      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No accounts and no users.</b> One household, one list, reached over your own network.</span></li>
     </ul>
   </div>
 </section>
@@ -345,9 +458,9 @@
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>The vision model runs on your server.</b> Ollama starts alongside the app in the same compose file. Point it at another machine on your network if you would rather.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No cloud service of any kind.</b> No OpenAI, no Anthropic, no Google. There is no key to paste in because there is nothing to call.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No analytics, no telemetry, no third-party scripts</b>, in the app or on this page. Nothing on this site is loaded from anywhere else.</span></li>
-      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No cookies.</b> Whether you chose light or dark is remembered by your own browser and never sent to the server.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One cookie, and it is yours.</b> It keeps you signed in, on your own server. Whether you chose light or dark is remembered by your own browser and never sent anywhere.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One folder to back up.</b> A single database file and a folder of photographs, both on a path you chose, both readable without the app running.</span></li>
-      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>Nothing is exposed to the internet.</b> There is no sign-in page because it is not meant to face outwards. Reach it over your own network, or something like Tailscale.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>Meant for your own network.</b> Reach it over your home network or something like Tailscale. Signing in is a door, not a wall: do not put it on the open internet.</span></li>
     </ul>
   </div>
 </section>
@@ -377,26 +490,14 @@ sudo chown -R 1000:1000 /opt/where/data</code></pre>
       </li>
       <li>
         <div>
-          <h3>Write the settings file</h3>
-          <p>
-            Save this as <code>.env</code> next to the compose file. Everything
-            you might want to change lives here, so you never have to edit the
-            compose file itself.
-          </p>
-          <pre><code>WHERE_PORT=4150
-WHERE_DATA=/opt/where
-OLLAMA_HOST=http://ollama:11434
-OLLAMA_MODEL=moondream
-WHERE_PUBLIC_URL=
-TZ=Europe/London</code></pre>
-        </div>
-      </li>
-      <li>
-        <div>
           <h3>Start it</h3>
           <p>
-            Save this as <code>docker-compose.yml</code> and bring it up. The
-            second container is Ollama, which does the picture reading.
+            Save this as <code>docker-compose.yml</code> and bring it up. That
+            is the whole file: the port to open it on and the folder your data
+            lives in. There is nothing else to configure and no
+            <code>.env</code> to write, because everything else is on the
+            Settings page inside the app. The second container is Ollama, which
+            does the picture reading.
           </p>
           <pre><code>services:
   where:
@@ -404,36 +505,38 @@ TZ=Europe/London</code></pre>
     container_name: where
     restart: unless-stopped
     ports:
-      - "${WHERE_PORT:-4150}:8080"
+      - "4150:8080"
     volumes:
-      - ${WHERE_DATA:-/opt/where}/data:/data
-    environment:
-      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
-      OLLAMA_MODEL: ${OLLAMA_MODEL:-moondream}
-      WHERE_PUBLIC_URL: ${WHERE_PUBLIC_URL:-}
-      TZ: ${TZ:-Europe/London}
-    depends_on:
-      - ollama
+      - /opt/where/data:/data
 
   ollama:
     image: ollama/ollama:latest
     container_name: where-ollama
     restart: unless-stopped
     volumes:
-      - ${WHERE_DATA:-/opt/where}/ollama:/root/.ollama
-    environment:
-      OLLAMA_KEEP_ALIVE: "10m"</code></pre>
+      - /opt/where/ollama:/root/.ollama</code></pre>
           <pre><code>docker compose up -d</code></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Make yourself an account</h3>
+          <p>
+            Open it on port 4150 and the first visit asks you to set yourself
+            up. That first account runs the place: it can change the settings
+            and add everyone else. New accounts are closed to strangers by
+            default, so handing the address to a visitor does not let them sign
+            themselves up.
+          </p>
         </div>
       </li>
       <li>
         <div>
           <h3>Name your first place, add your first thing</h3>
           <p>
-            Open it on port 4150. Add a place, press <b>Add item here</b>, take
-            a photograph and type what it is. The front page tells you whether
-            the vision model is ready; the first description takes longer while
-            the model downloads.
+            Add a place, press <b>Add item here</b>, take a photograph and type
+            what it is. The front page tells you whether the vision model is
+            ready; the first description takes longer while the model downloads.
           </p>
         </div>
       </li>
@@ -462,7 +565,7 @@ TZ=Europe/London</code></pre>
     <ul class="plain-list">
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It is not an inventory system.</b> No prices, no purchase dates, no receipts, no insurance fields. If you need those, this is the wrong tool.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It does not look things up online.</b> No barcode scanning against a retail database. The photograph and your own words are the record.</span></li>
-      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>There is no sign-in.</b> Anyone who can reach the address can use it, which is why it belongs on a private network and not on the open internet.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>Separate lists per person are not offered.</b> Everyone who signs in sees the same cupboards. If two people want two inventories, run two copies.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It does not track lending.</b> No record of who borrowed what. It tells you where a thing lives, not where it went.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It is not hosted for you.</b> There is no signup page and no service to join. You run it yourself or you do not run it.</span></li>
     </ul>
@@ -482,6 +585,12 @@ TZ=Europe/London</code></pre>
       <dt>What happens if the vision model is switched off?</dt>
       <dd>Items still save immediately. Only the automatic description is missing, and you can type one yourself or ask for it again later. Saving never waits for the model.</dd>
 
+      <dt>Can more than one person use it?</dt>
+      <dd>Yes. Everyone signs in with their own name and password and sees the same places and items, because two people in the same house need to find the same cable. The first account made runs the place: it changes the settings and adds everyone else. New accounts are closed to strangers unless you turn them on.</dd>
+
+      <dt>Where do I configure it?</dt>
+      <dd>On the Settings page inside the app. The model, its address, how long to wait for a photograph, the address printed into QR labels and who may sign in are all there. There is no <code>.env</code> file, and the only things in the compose file are the port to open it on and the folder your data lives in, because neither can be changed from inside a running container.</dd>
+
       <dt>Which model should I use?</dt>
       <dd>Moondream is the default because it is small, quick and runs without a graphics card. It writes a good short description of a single item. It is weaker at listing everything in a tray photograph, so if that part disappoints, set <code>OLLAMA_MODEL=minicpm-v</code> in your settings file and restart. The new model downloads itself.</dd>
 
@@ -495,7 +604,7 @@ TZ=Europe/London</code></pre>
       <dd>Yes, that is the main way. Add it to your home screen and it opens like an app. The camera opens straight from the add form, and scanning a place label opens that place. Camera access needs the app to be reached over https.</dd>
 
       <dt>Where is my data kept?</dt>
-      <dd>In one folder on your own server: a single SQLite database and a folder of photographs. Copy that folder and you have everything. The downloaded model sits in a separate folder and can always be fetched again.</dd>
+      <dd>In one folder on your own server: a single SQLite database, a folder of photographs and the key that keeps people signed in. Copy that folder and you have everything. The downloaded model sits in a separate folder and can always be fetched again.</dd>
 
       <dt>What does it cost?</dt>
       <dd>Nothing. It is released under the GNU General Public Licence version 3, so you can run it, read it and change it. There is no paid tier and no hosted version to buy.</dd>
@@ -535,6 +644,7 @@ TZ=Europe/London</code></pre>
         <ul>
           <li><a href="#adding">Adding things</a></li>
           <li><a href="#labels">Labels</a></li>
+          <li><a href="#accounts">Accounts</a></li>
           <li><a href="#privacy">Privacy</a></li>
           <li><a href="#install">Install</a></li>
           <li><a href="#faq">Questions</a></li>
@@ -554,7 +664,7 @@ TZ=Europe/London</code></pre>
         <a href="https://github.com/lightmorphic/where/blob/main/LICENSE">GNU General Public Licence version 3</a>.
       </p>
       <p>
-        Screenshots show version 0.1.4 with made-up example contents. Ollama and
+        Screenshots show version 0.2.0 with made-up example contents. Ollama and
         Moondream are separate projects with their own licences and are not
         affiliated with Lightmorphic.
       </p>

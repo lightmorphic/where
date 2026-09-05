@@ -9,6 +9,19 @@ from . import config
 _lock = threading.Lock()
 
 SCHEMA = """
+CREATE TABLE IF NOT EXISTS users (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    username      TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    password_hash TEXT NOT NULL,
+    is_admin      INTEGER NOT NULL DEFAULT 0,
+    created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS settings (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS places (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT NOT NULL UNIQUE,
@@ -202,6 +215,48 @@ def delete_bulk_job(conn, job_id):
 
 def pending_bulk_job_ids(conn):
     return [r[0] for r in conn.execute("SELECT id FROM bulk_jobs WHERE status = 'pending'")]
+
+
+# ---- users ----
+
+def user_count(conn):
+    return conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+
+
+def list_users(conn):
+    return conn.execute("SELECT * FROM users ORDER BY username COLLATE NOCASE").fetchall()
+
+
+def get_user(conn, user_id):
+    return conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+
+
+def get_user_by_name(conn, username):
+    return conn.execute("SELECT * FROM users WHERE username = ? COLLATE NOCASE", (username,)).fetchone()
+
+
+def create_user(conn, username, password_hash, is_admin=False):
+    cur = conn.execute(
+        "INSERT INTO users (username, password_hash, is_admin) VALUES (?, ?, ?)",
+        (username, password_hash, 1 if is_admin else 0),
+    )
+    return cur.lastrowid
+
+
+def set_password(conn, user_id, password_hash):
+    conn.execute("UPDATE users SET password_hash = ? WHERE id = ?", (password_hash, user_id))
+
+
+def set_admin(conn, user_id, is_admin):
+    conn.execute("UPDATE users SET is_admin = ? WHERE id = ?", (1 if is_admin else 0, user_id))
+
+
+def delete_user(conn, user_id):
+    conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+
+
+def admin_count(conn):
+    return conn.execute("SELECT COUNT(*) FROM users WHERE is_admin = 1").fetchone()[0]
 
 
 def counts(conn):

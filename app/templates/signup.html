@@ -1,0 +1,42 @@
+{% extends "auth_layout.html" %}
+{% block title %}Create an account — Where{% endblock %}
+{% block content %}
+{% if closed %}
+<div class="page-head"><h1>Accounts are closed</h1></div>
+<div class="panel empty">
+  <p>New accounts are switched off on this copy of Where. Ask whoever looks after it to add you, or to turn accounts on in Settings.</p>
+</div>
+<p class="hint gate-alt"><a href="{{ url_for('main.login') }}">Back to sign in</a></p>
+{% else %}
+<div class="page-head">
+  <h1>{% if first_run %}Set yourself up{% else %}Create an account{% endif %}</h1>
+  <p class="hint">
+    {% if first_run %}
+      Nobody has an account yet, so this first one runs the place. Everyone you
+      add later shares the same places and items.
+    {% else %}
+      You will see the same places and items as everyone else here.
+    {% endif %}
+  </p>
+</div>
+
+<form class="panel item-form" action="{{ url_for('main.signup') }}" method="post">
+  {% if error %}<p class="form-error">! {{ error }}</p>{% endif %}
+
+  <label for="username">Name</label>
+  <input id="username" name="username" type="text" value="{{ username }}" maxlength="40" required autocomplete="username" autocapitalize="none" autofocus>
+
+  <label for="password">Password <span class="hint">at least 8 characters</span></label>
+  <input id="password" name="password" type="password" required autocomplete="new-password" minlength="8">
+
+  <label for="password2">Password again</label>
+  <input id="password2" name="password2" type="password" required autocomplete="new-password" minlength="8">
+
+  <button class="btn primary big" type="submit">Create account</button>
+</form>
+
+{% if not first_run %}
+<p class="hint gate-alt">Already have one? <a href="{{ url_for('main.login') }}">Sign in</a>.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

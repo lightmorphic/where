@@ -1,15 +1,20 @@
 import os
 
-from flask import (Blueprint, abort, jsonify, redirect, render_template, request,
+from flask import (Blueprint, abort, g, jsonify, redirect, render_template, request,
                    send_from_directory, url_for)
 
-from . import config, db, photos, qr, vision
+from . import auth, config, db, photos, qr, settings, vision
 
 bp = Blueprint("main", __name__)
 
 
+@bp.app_context_processor
+def _template_globals():
+    return {"user": g.get("user")}
+
+
 def _base_url():
-    return config.PUBLIC_URL or request.url_root.rstrip("/")
+    return settings.get("public_url").rstrip("/") or request.url_root.rstrip("/")
 
 
 def _place_url(place_id):
@@ -18,6 +23,157 @@ def _place_url(place_id):
 
 def _clean(value, limit=200):
     return " ".join((value or "").split())[:limit]
+
+
+# ---- accounts ----
+
+@bp.route("/signup", methods=["GET", "POST"])
+def signup():
+    with db.db() as conn:
+        first_run = db.user_count(conn) == 0
+        open_to_all = settings.get_bool("allow_signup", conn)
+    if not first_run and not open_to_all:
+        if g.get("user"):
+            return redirect(url_for("main.settings_page"))
+        return render_template("signup.html", closed=True, first_run=False), 403
+
+    error = None
+    username = ""
+    if request.method == "POST":
+        username = _clean(request.form.get("username"), 40)
+        password = request.form.get("password") or ""
+        again = request.form.get("password2") or ""
+        error = auth.username_problem(username) or auth.password_problem(password, again)
+        if error is None:
+            with db.db() as conn:
+                if db.get_user_by_name(conn, username):
+                    error = "That name is taken."
+                else:
+                    user_id = db.create_user(conn, username, auth.hash_password(password),
+                                             is_admin=first_run)
+                    user = db.get_user(conn, user_id)
+            if error is None:
+                auth.sign_in(user)
+                return redirect(url_for("main.index"))
+
+    return render_template("signup.html", error=error, username=username,
+                           first_run=first_run, closed=False)
+
+
+@bp.route("/login", methods=["GET", "POST"])
+def login():
+    with db.db() as conn:
+        if db.user_count(conn) == 0:
+            return redirect(url_for("main.signup"))
+        open_to_all = settings.get_bool("allow_signup", conn)
+    error = None
+    username = ""
+    if request.method == "POST":
+        username = _clean(request.form.get("username"), 40)
+        password = request.form.get("password") or ""
+        with db.db() as conn:
+            user = db.get_user_by_name(conn, username)
+        if user and auth.check_password(user, password):
+            auth.sign_in(user)
+            return redirect(auth.safe_next(request.form.get("next")))
+        error = "That name and password do not match."
+    return render_template("login.html", error=error, username=username,
+                           open_to_all=open_to_all, next=request.args.get("next", ""))
+
+
+@bp.route("/logout", methods=["POST"])
+def logout():
+    auth.sign_out()
+    return redirect(url_for("main.login"))
+
+
+# ---- settings ----
+
+@bp.route("/settings")
+def settings_page():
+    with db.db() as conn:
+        values = settings.all(conn)
+        users = db.list_users(conn)
+    return render_template("settings.html", values=values, users=users,
+                           model=vision.status(), saved=request.args.get("saved"))
+
+
+@bp.route("/settings/descriptions", methods=["POST"])
+@auth.admin_only
+def settings_descriptions():
+    with db.db() as conn:
+        settings.set_many(conn, {
+            "ollama_host": _clean(request.form.get("ollama_host"), 200) or settings.DEFAULTS["ollama_host"],
+            "ollama_model": _clean(request.form.get("ollama_model"), 80) or settings.DEFAULTS["ollama_model"],
+            "ollama_timeout": max(10, min(3600, request.form.get("ollama_timeout", type=int) or 300)),
+        })
+    vision.forget_status()
+    return redirect(url_for("main.settings_page", saved="descriptions") + "#descriptions")
+
+
+@bp.route("/settings/labels", methods=["POST"])
+@auth.admin_only
+def settings_labels():
+    url = _clean(request.form.get("public_url"), 200).rstrip("/")
+    if url and not url.startswith(("http://", "https://")):
+        url = "https://" + url
+    with db.db() as conn:
+        settings.set_many(conn, {"public_url": url})
+    return redirect(url_for("main.settings_page", saved="labels") + "#labels")
+
+
+@bp.route("/settings/signup", methods=["POST"])
+@auth.admin_only
+def settings_signup():
+    allow = "1" if request.form.get("allow_signup") or (request.json or {}).get("allow_signup") else "0"
+    with db.db() as conn:
+        settings.set_many(conn, {"allow_signup": allow})
+    if request.is_json:
+        return jsonify(ok=True, allow_signup=allow == "1")
+    return redirect(url_for("main.settings_page", saved="accounts") + "#accounts")
+
+
+@bp.route("/settings/password", methods=["POST"])
+def settings_password():
+    current = request.form.get("current") or ""
+    password = request.form.get("password") or ""
+    again = request.form.get("password2") or ""
+    if not auth.check_password(g.user, current):
+        return redirect(url_for("main.settings_page", saved="password-wrong") + "#password")
+    if auth.password_problem(password, again):
+        return redirect(url_for("main.settings_page", saved="password-bad") + "#password")
+    with db.db() as conn:
+        db.set_password(conn, g.user["id"], auth.hash_password(password))
+    return redirect(url_for("main.settings_page", saved="password") + "#password")
+
+
+@bp.route("/settings/users", methods=["POST"])
+@auth.admin_only
+def settings_add_user():
+    username = _clean(request.form.get("username"), 40)
+    password = request.form.get("password") or ""
+    problem = auth.username_problem(username) or auth.password_problem(password)
+    if problem is None:
+        with db.db() as conn:
+            if db.get_user_by_name(conn, username):
+                problem = "taken"
+            else:
+                db.create_user(conn, username, auth.hash_password(password),
+                               is_admin=bool(request.form.get("is_admin")))
+    return redirect(url_for("main.settings_page",
+                            saved="user-added" if problem is None else "user-failed") + "#accounts")
+
+
+@bp.route("/settings/users/<int:user_id>/delete", methods=["POST"])
+@auth.admin_only
+def settings_delete_user(user_id):
+    with db.db() as conn:
+        user = db.get_user(conn, user_id) or abort(404)
+        # Never leave the app with nobody who can administer it.
+        if user["is_admin"] and db.admin_count(conn) <= 1:
+            return redirect(url_for("main.settings_page", saved="last-admin") + "#accounts")
+        db.delete_user(conn, user_id)
+    return redirect(url_for("main.settings_page", saved="user-removed") + "#accounts")
 
 
 # ---- home, search ----

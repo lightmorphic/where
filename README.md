@@ -17,33 +17,41 @@ A small self-hosted web app for one job: remembering which cupboard, shelf, box 
 - **Add lots from one photo**: photograph a whole tray, tick what it found, fix names, save them all.
 - **QR labels** for each place, sized for 30 × 20 mm thermal labels. Scan one with the phone camera and the place opens.
 - **Search** across name, description and note. Results say plainly: "USB-C cable — Tray 14".
+- **Accounts** so a household can share one list. Everyone signs in with their own name and password and sees the same places and items.
+- **Everything is set up inside the app.** There is nothing to configure in `docker-compose.yml` and no `.env` file: the model, its address, the label address and who may sign in all live on the Settings page.
 - Works as a phone app: mobile-first, installable to the home screen, camera capture for photos and scanning.
 
 ## Run it
 
-You need Docker. Everything you might change lives in `.env`.
+You need Docker.
 
 ```bash
 sudo mkdir -p /opt/where/data /opt/where/ollama
 sudo chown -R 1000:1000 /opt/where/data
-cp .env.example .env
 docker compose up -d
 ```
 
-Then open `http://<your-server>:4150`. The vision model downloads itself the first time it is needed (about 1.7 GB for Moondream), so the first description takes a while.
+Then open `http://<your-server>:4150`. The first visit asks you to create an account, and that first account runs the place. The vision model downloads itself the first time it is needed (about 1.7 GB for Moondream), so the first description takes a while.
 
 The app runs as user 1000 inside the container, which is why the data folder is owned by 1000 on the host.
 
-### Settings (`.env`)
+### Settings
 
-| Setting | What it does | Default |
-|---|---|---|
-| `WHERE_PORT` | Port you open in the browser | `4150` |
-| `WHERE_DATA` | Host folder holding database, photos and the model | `/opt/where` |
-| `OLLAMA_HOST` | Where Ollama is. The bundled container is `http://ollama:11434` | bundled |
-| `OLLAMA_MODEL` | Vision model to use. See below | `moondream` |
-| `WHERE_PUBLIC_URL` | Address baked into QR labels. Blank uses whatever you are browsing from | blank |
-| `TZ` | Timezone | `Europe/London` |
+There is no `.env` file and nothing to configure in the compose file. Everything is on the **Settings** page inside the app:
+
+| Setting | What it does |
+|---|---|
+| Address of the model | Where Ollama is. Leave it on the bundled container, or point it at a machine with more memory |
+| Model name | Which vision model to use. See below |
+| Give up after | How long to wait for one photo |
+| Address in QR codes | Baked into printed labels. Leave it empty to use whatever address you print from |
+| Let anyone make an account | Off by default. With it off, you add people yourself |
+
+The only two things left in `docker-compose.yml` are the port to open the app on and the folder your data lives in, because neither can be set from inside a running container.
+
+### Accounts
+
+Everyone signed in shares one list, because two people in the same house need to find the same cable. The first account created runs the place: it can change the settings above and add or remove other accounts. New accounts are closed by default, so an address handed to a visitor does not let them sign themselves up.
 
 ### Choosing the model
 
@@ -62,7 +70,7 @@ docker compose up -d
 
 ### Backing up
 
-Everything is in `WHERE_DATA` (`/opt/where` by default): `data/where.db` and `data/photos/`. Copy that folder and you have it all. The `ollama/` folder is just the downloaded model and can be re-downloaded.
+Everything is in `/opt/where/data`: `where.db`, `photos/` and `secret.key`, which is what keeps people signed in across a restart. Copy that folder and you have it all. The `ollama/` folder is just the downloaded model and can be re-downloaded.
 
 ## Camera on the phone
 
