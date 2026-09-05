@@ -34,9 +34,16 @@ The app runs as user 1000 inside the container, which is why the data folder is 
 | `WHERE_PORT` | Port you open in the browser | `4150` |
 | `WHERE_DATA` | Host folder holding database, photos and the model | `/opt/where` |
 | `OLLAMA_HOST` | Where Ollama is. The bundled container is `http://ollama:11434` | bundled |
-| `OLLAMA_MODEL` | Vision model to use. Swap for `llava` or `minicpm-v` on a bigger machine | `moondream` |
+| `OLLAMA_MODEL` | Vision model to use. See below | `moondream` |
 | `WHERE_PUBLIC_URL` | Address baked into QR labels. Blank uses whatever you are browsing from | blank |
 | `TZ` | Timezone | `Europe/London` |
+
+### Choosing the model
+
+Moondream is the default: small, quick, and good at a short description of one
+item. It is weak at listing everything in a tray photo. If *add lots from one
+photo* disappoints, set `OLLAMA_MODEL=minicpm-v` (about 5.5 GB) in `.env` and
+restart. The new model downloads itself on first use.
 
 ### Updating
 

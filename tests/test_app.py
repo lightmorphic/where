@@ -98,6 +98,18 @@ def test_clean_sentence_strips_lead_in_and_loops():
     assert len(long) <= 300 and not long.endswith("wor")
 
 
+def test_usable_rejects_model_junk():
+    assert not vision.usable('?"')
+    assert not vision.usable("urn")
+    assert not vision.usable("")
+    assert vision.usable("Black and silver, thin and long")
+
+
+def test_clean_sentence_drops_leading_junk():
+    assert vision.clean_sentence('!!! USB-C cable with a black cord.') == "USB-C cable with a black cord"
+    assert vision.clean_sentence("\xa0Black and silver, thin and long.") == "Black and silver, thin and long"
+
+
 def test_parse_list_cleans_model_output():
     text = "1. USB-C cable\n- AA batteries, four of them\n* Tray\n\nScrewdriver.\nusb-c cable"
     assert vision.parse_list(text) == ["USB-C cable", "AA batteries", "Screwdriver"]
