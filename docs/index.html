@@ -36,7 +36,7 @@
       "operatingSystem": "Linux, via Docker",
       "description": "A self-hosted web app that records which cupboard, shelf, box or tray each thing in your home is in. Photographs are described by a vision model running on your own server, places get printable QR labels, and searching returns the item and where it is.",
       "license": "https://www.gnu.org/licenses/gpl-3.0.html",
-      "softwareVersion": "0.2.0",
+      "softwareVersion": "0.2.1",
       "releaseNotes": "https://github.com/lightmorphic/where/blob/main/CHANGELOG.md",
       "codeRepository": "https://github.com/lightmorphic/where",
       "programmingLanguage": "Python",
@@ -482,10 +482,15 @@
           <p>
             Where runs as a normal user inside the container, user ID 1000, so
             the data folder on the host has to belong to that same ID or the app
-            cannot write to it.
+            cannot write to it and will not start.
           </p>
           <pre><code>sudo mkdir -p /opt/where/data /opt/where/ollama
 sudo chown -R 1000:1000 /opt/where/data</code></pre>
+          <p>
+            If you ever delete that folder, Docker makes it again owned by root,
+            and you have to hand it back before Where will start. It says so in
+            the log if it happens.
+          </p>
         </div>
       </li>
       <li>
@@ -664,7 +669,7 @@ sudo chown -R 1000:1000 /opt/where/data</code></pre>
         <a href="https://github.com/lightmorphic/where/blob/main/LICENSE">GNU General Public Licence version 3</a>.
       </p>
       <p>
-        Screenshots show version 0.2.0 with made-up example contents. Ollama and
+        Screenshots show version 0.2.1 with made-up example contents. Ollama and
         Moondream are separate projects with their own licences and are not
         affiliated with Lightmorphic.
       </p>

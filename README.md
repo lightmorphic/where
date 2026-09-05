@@ -31,9 +31,17 @@ sudo chown -R 1000:1000 /opt/where/data
 docker compose up -d
 ```
 
-Then open `http://<your-server>:4150`. The first visit asks you to create an account, and that first account runs the place. The vision model downloads itself the first time it is needed (about 1.7 GB for Moondream), so the first description takes a while.
+**Do not skip the second line.** Where runs as user 1000 inside the container, so
+the folder on the host has to belong to user 1000 or the app cannot write to it
+and will not start. If you ever delete the data folder, Docker recreates it owned
+by root, and you have to run that line again:
 
-The app runs as user 1000 inside the container, which is why the data folder is owned by 1000 on the host.
+```bash
+sudo chown -R 1000:1000 /opt/where/data
+docker compose up -d --force-recreate
+```
+
+Then open `http://<your-server>:4150`. The first visit asks you to create an account, and that first account runs the place. The vision model downloads itself the first time it is needed (about 1.7 GB for Moondream), so the first description takes a while.
 
 ### Settings
 

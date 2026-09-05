@@ -77,9 +77,49 @@ def db():
 
 
 def init():
+    check_data_dir()
     os.makedirs(config.PHOTO_DIR, exist_ok=True)
     with _lock, db() as conn:
         conn.executescript(SCHEMA)
+
+
+def check_data_dir():
+    """Fail with something a person can act on.
+
+    In Docker the app runs as user 1000 and writes to a folder on the host. If
+    that folder belongs to somebody else, every write fails, and the bare
+    traceback does not say what to do about it.
+    """
+    path = os.path.abspath(config.DATA_DIR)
+    try:
+        os.makedirs(path, exist_ok=True)
+    except OSError as exc:
+        raise SystemExit(_cannot_write(path, exc))
+    probe = os.path.join(path, ".write-test")
+    try:
+        with open(probe, "w") as f:
+            f.write("")
+        os.remove(probe)
+    except OSError as exc:
+        raise SystemExit(_cannot_write(path, exc))
+
+
+def _cannot_write(path, exc):
+    uid, gid = os.getuid(), os.getgid()
+    try:
+        st = os.stat(path)
+        owner = f"user {st.st_uid}, group {st.st_gid}"
+    except OSError:
+        owner = "unknown"
+    return (
+        f"\n  Where cannot write to its data folder: {path}\n"
+        f"  ({exc.strerror})\n\n"
+        f"  The folder belongs to {owner}. Where runs as user {uid}, group {gid}.\n"
+        f"  On the host, give it to that user and start the app again:\n\n"
+        f"      sudo chown -R {uid}:{gid} <the folder you mounted at /data>\n\n"
+        f"  For the usual setup that is:\n\n"
+        f"      sudo chown -R {uid}:{gid} /opt/where/data\n"
+    )
 
 
 # ---- places ----

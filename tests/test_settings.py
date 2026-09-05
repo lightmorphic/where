@@ -59,3 +59,21 @@ def test_nothing_is_read_from_the_environment(client, monkeypatch):
     monkeypatch.setenv("OLLAMA_HOST", "http://elsewhere:1")
     assert vision.model() == "moondream"
     assert vision.host() == "http://127.0.0.1:9"
+
+
+def test_a_data_folder_it_cannot_write_to_says_what_to_do(tmp_path, monkeypatch, capsys):
+    """A root-owned bind mount is the commonest first-run failure in Docker."""
+    import pytest
+    from app import config, db
+    locked = tmp_path / "locked"
+    locked.mkdir()
+    locked.chmod(0o555)
+    monkeypatch.setattr(config, "DATA_DIR", str(locked))
+    monkeypatch.setattr(config, "PHOTO_DIR", str(locked / "photos"))
+    monkeypatch.setattr(config, "DB_PATH", str(locked / "where.db"))
+    with pytest.raises(SystemExit) as raised:
+        db.init()
+    message = str(raised.value)
+    assert "cannot write to its data folder" in message
+    assert "chown" in message
+    locked.chmod(0o755)
