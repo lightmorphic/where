@@ -9,7 +9,7 @@ import time
 import urllib.error
 import urllib.request
 
-from . import config, db, photos
+from . import db, photos, settings
 
 log = logging.getLogger("where.vision")
 
@@ -36,9 +36,17 @@ BULK_PROMPT = (
 
 # ---- Ollama HTTP ----
 
+def host():
+    return settings.get("ollama_host").rstrip("/")
+
+
+def model():
+    return settings.get("ollama_model")
+
+
 def _post(path, payload, timeout):
     req = urllib.request.Request(
-        config.OLLAMA_HOST + path,
+        host() + path,
         data=json.dumps(payload).encode(),
         headers={"Content-Type": "application/json"},
     )
@@ -47,7 +55,7 @@ def _post(path, payload, timeout):
 
 
 def _get(path, timeout=5):
-    with urllib.request.urlopen(config.OLLAMA_HOST + path, timeout=timeout) as resp:
+    with urllib.request.urlopen(host() + path, timeout=timeout) as resp:
         return json.loads(resp.read().decode())
 
 
@@ -57,7 +65,7 @@ def generate(prompt, image_path, max_tokens=80):
     out = _post(
         "/api/generate",
         {
-            "model": config.OLLAMA_MODEL,
+            "model": model(),
             "prompt": prompt,
             "images": [image_b64],
             "stream": False,
@@ -67,14 +75,14 @@ def generate(prompt, image_path, max_tokens=80):
             # a single word, so cap the length and lower the temperature instead.
             "options": {"num_predict": max_tokens, "temperature": 0.1},
         },
-        timeout=config.OLLAMA_TIMEOUT,
+        timeout=settings.get_int("ollama_timeout"),
     )
     return (out.get("response") or "").strip()
 
 
 def model_present():
     tags = _get("/api/tags")
-    wanted = config.OLLAMA_MODEL
+    wanted = model()
     names = {m.get("name", "") for m in tags.get("models", [])}
     return wanted in names or f"{wanted}:latest" in names
 
@@ -83,23 +91,29 @@ def ensure_model():
     """Pull the model if Ollama is up but does not have it yet. Slow the first time."""
     if model_present():
         return True
-    log.info("pulling model %s", config.OLLAMA_MODEL)
-    _post("/api/pull", {"name": config.OLLAMA_MODEL, "stream": False}, timeout=3600)
+    log.info("pulling model %s", model())
+    _post("/api/pull", {"name": model(), "stream": False}, timeout=3600)
     return model_present()
 
 
-def status(max_age=30):
+def status(max_age=30, force=False):
     """Cheap health check for the UI, cached for a little while."""
     now = time.time()
-    if now - _state["checked"] < max_age and _state["ok"] is not None:
+    if not force and now - _state["checked"] < max_age and _state["ok"] is not None:
         return dict(_state)
     try:
         present = model_present()
-        _state.update(ok=present, detail="" if present else f"model {config.OLLAMA_MODEL} not downloaded yet")
-    except Exception as exc:
-        _state.update(ok=False, detail=f"cannot reach the model at {config.OLLAMA_HOST}")
+        _state.update(ok=present, detail="model ready" if present
+                      else f"{model()} has not been downloaded yet")
+    except Exception:
+        _state.update(ok=False, detail=f"cannot reach the model at {host()}")
     _state["checked"] = now
     return dict(_state)
+
+
+def forget_status():
+    """Called when the settings change, so the next check really checks."""
+    _state.update(ok=None, checked=0, detail="")
 
 
 # ---- clean-up of model output ----

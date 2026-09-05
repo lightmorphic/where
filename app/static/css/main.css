@@ -23,6 +23,7 @@
   --radius: 0.875rem;
   --panel-radius: 1.375rem;
   --nav-h: 4.25rem;
+  --chev-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6-6 6'/%3E%3C/svg%3E");
   --box-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8l9-4 9 4v8l-9 4-9-4z'/%3E%3Cpath d='M3 8l9 4 9-4M12 12v8'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme: dark) {
@@ -120,7 +121,8 @@ p:last-child { margin-bottom: 0; }
 label { display: block; font-size: .9375rem; font-weight: 600; margin: 1rem 0 .375rem; }
 label .hint { font-weight: 400; margin-left: .25rem; }
 .panel > label:first-child, .item-form > label:first-child { margin-top: 0; }
-input[type="text"], input[type="search"], select, textarea {
+input[type="text"], input[type="search"], input[type="password"],
+input[type="number"], input[type="email"], select, textarea {
   display: block; width: 100%; min-height: 2.875rem; padding: .625rem .875rem;
   font: inherit; color: var(--fg); background: var(--bg);
   border: 1px solid var(--border); border-radius: var(--radius);
@@ -185,7 +187,22 @@ input[type="checkbox"], input[type="radio"] { width: 1.25rem; height: 1.25rem; f
 .item-desc.pending { font-style: italic; }
 .item-note::before { content: "Note: "; font-weight: 600; }
 .tag { display: inline-block; padding: 0 .5rem; border-radius: 999px; background: var(--warning-bg); color: var(--warning); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; vertical-align: middle; }
-.gone-list summary, .manage summary { cursor: pointer; font-weight: 600; min-height: 2.75rem; display: flex; align-items: center; }
+.gone-list summary, .manage summary, .add-user summary {
+  cursor: pointer; font-weight: 600; min-height: 2.75rem;
+  display: flex; align-items: center; gap: .5rem; list-style: none;
+}
+.gone-list summary::-webkit-details-marker, .manage summary::-webkit-details-marker,
+.add-user summary::-webkit-details-marker { display: none; }
+/* display:flex removes the browser's own triangle, so draw one back. */
+.gone-list summary::before, .manage summary::before, .add-user summary::before {
+  content: ""; flex: none; width: 1rem; height: 1rem;
+  background: currentColor; color: var(--muted-fg);
+  transition: transform .15s ease;
+  -webkit-mask: var(--chev-icon) center / contain no-repeat;
+  mask: var(--chev-icon) center / contain no-repeat;
+}
+details[open] > summary::before { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { details > summary::before { transition: none; } }
 .gone-list ul { margin-top: .625rem; }
 .manage summary { margin: -.25rem 0; }
 .manage form { margin-top: .5rem; }
@@ -193,6 +210,8 @@ input[type="checkbox"], input[type="radio"] { width: 1.25rem; height: 1.25rem; f
 .danger-form { margin-top: 1rem; }
 .saved-note { padding: .875rem 1.125rem; border-radius: var(--radius); background: var(--success-bg); color: var(--success); font-weight: 600; }
 .saved-note a { color: inherit; }
+.saved-note.bad { background: var(--danger-bg); color: var(--danger); }
+.form-error { padding: .75rem 1rem; margin-bottom: 1rem; border-radius: var(--radius); background: var(--danger-bg); color: var(--danger); font-weight: 600; font-size: .9375rem; }
 .status-line { text-align: center; }
 
 /* photo field */
@@ -239,6 +258,8 @@ input[type="checkbox"], input[type="radio"] { width: 1.25rem; height: 1.25rem; f
 .bottom {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
   display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.bottom.five { grid-template-columns: repeat(5, 1fr);
   height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
   background: var(--panel); border-top: 1px solid var(--border);
 }
@@ -251,3 +272,34 @@ input[type="checkbox"], input[type="radio"] { width: 1.25rem; height: 1.25rem; f
   .page { padding: 2rem 1.5rem; }
   h1 { font-size: 2rem; }
 }
+
+/* --------------------------------------------------- sign in and sign up */
+
+body.plain { padding-bottom: 2rem; }
+.gate { max-width: 26rem; padding-top: 2.5rem; }
+.gate-brand {
+  display: flex; align-items: center; justify-content: center; gap: .625rem;
+  margin-bottom: .5rem; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.03em;
+}
+.gate-brand svg { color: var(--accent); }
+.gate .page-head { text-align: center; }
+.gate-alt { text-align: center; }
+
+/* ------------------------------------------------------------- settings */
+
+.panel-head { font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: .5rem; }
+.panel-head + .hint { margin-bottom: 1rem; }
+.page > section.panel { display: block; }
+section.panel form > .btn { margin-top: 1.25rem; }
+section.panel .hint + label { margin-top: 1.25rem; }
+
+.user-list { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; }
+.user-list li {
+  display: flex; align-items: center; gap: .75rem; min-height: 3.25rem;
+  border-top: 1px solid var(--border);
+}
+.user-list li:first-child { border-top: 0; }
+.user-name { flex: 1; font-weight: 600; overflow-wrap: anywhere; }
+.tag.you { background: var(--muted); color: var(--muted-fg); }
+.add-user { margin-top: 1rem; }
+.signout { margin-top: 1.25rem; }

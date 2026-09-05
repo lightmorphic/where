@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% set nav = 'settings' %}
+{% block title %}Settings — Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Settings</h1>
+  <p class="hint">Signed in as {{ user.username }}{% if user.is_admin %} · runs this copy{% endif %}</p>
+</div>
+
+{% if saved %}
+<p class="saved-note{% if saved in ('password-wrong', 'password-bad', 'user-failed', 'last-admin') %} bad{% endif %}">
+  {% if saved == 'descriptions' %}✓ Saved. The next photo will use these.
+  {% elif saved == 'labels' %}✓ Saved. New labels will carry this address.
+  {% elif saved == 'accounts' %}✓ Saved.
+  {% elif saved == 'password' %}✓ Your password has been changed.
+  {% elif saved == 'password-wrong' %}! That is not your current password.
+  {% elif saved == 'password-bad' %}! Use at least 8 characters, and type the same one twice.
+  {% elif saved == 'user-added' %}✓ Account created.
+  {% elif saved == 'user-failed' %}! That did not work. Check the name is free and the password is at least 8 characters.
+  {% elif saved == 'user-removed' %}✓ Account removed.
+  {% elif saved == 'last-admin' %}! That is the only account that runs this copy, so it cannot be removed.
+  {% endif %}
+</p>
+{% endif %}
+
+<section class="panel" id="descriptions">
+  <h2 class="panel-head">Descriptions from photos</h2>
+  <p class="hint">
+    {% if model.ok %}✓ Working now: {{ model.detail }}.{% else %}! Not working: {{ model.detail }}. Items still save; descriptions fill in once it is back.{% endif %}
+  </p>
+  {% if user.is_admin %}
+  <form action="{{ url_for('main.settings_descriptions') }}" method="post">
+    <label for="ollama_host">Address of the model</label>
+    <input id="ollama_host" name="ollama_host" type="text" value="{{ values.ollama_host }}" maxlength="200" autocapitalize="none" spellcheck="false">
+    <p class="hint">Leave this as it is to use the Ollama started alongside the app. Point it at another machine on your network if that one has more memory.</p>
+
+    <label for="ollama_model">Model name</label>
+    <input id="ollama_model" name="ollama_model" type="text" value="{{ values.ollama_model }}" maxlength="80" autocapitalize="none" spellcheck="false">
+    <p class="hint">It downloads itself the first time it is needed. <b>moondream</b> is small and quick and describes one item well. <b>minicpm-v</b> is bigger and much better at listing a whole tray.</p>
+
+    <label for="ollama_timeout">Give up after</label>
+    <input id="ollama_timeout" name="ollama_timeout" type="number" value="{{ values.ollama_timeout }}" min="10" max="3600" step="10">
+    <p class="hint">Seconds to wait for one photo. A slow machine may need several minutes.</p>
+
+    <button class="btn primary big" type="submit">Save</button>
+  </form>
+  {% else %}
+  <p class="hint">Only the person who runs this copy can change these.</p>
+  {% endif %}
+</section>
+
+<section class="panel" id="labels">
+  <h2 class="panel-head">Printed labels</h2>
+  {% if user.is_admin %}
+  <form action="{{ url_for('main.settings_labels') }}" method="post">
+    <label for="public_url">Address to put in QR codes</label>
+    <input id="public_url" name="public_url" type="text" value="{{ values.public_url }}" maxlength="200" placeholder="leave empty to use whatever you are on now" autocapitalize="none" spellcheck="false">
+    <p class="hint">A label is printed once and scanned for years, so it needs the address you will always open the app at. Leave it empty and each label uses whatever address you happened to print it from.</p>
+    <button class="btn primary big" type="submit">Save</button>
+  </form>
+  {% else %}
+  <p class="hint">Labels point at <b>{{ values.public_url or 'whatever address you print them from' }}</b>. Only the person who runs this copy can change that.</p>
+  {% endif %}
+</section>
+
+<section class="panel" id="password">
+  <h2 class="panel-head">Your password</h2>
+  <form action="{{ url_for('main.settings_password') }}" method="post">
+    <label for="current">Current password</label>
+    <input id="current" name="current" type="password" required autocomplete="current-password">
+    <label for="new-password">New password <span class="hint">at least 8 characters</span></label>
+    <input id="new-password" name="password" type="password" required autocomplete="new-password" minlength="8">
+    <label for="password2">New password again</label>
+    <input id="password2" name="password2" type="password" required autocomplete="new-password" minlength="8">
+    <button class="btn big" type="submit">Change password</button>
+  </form>
+</section>
+
+<section class="panel" id="accounts">
+  <h2 class="panel-head">Who can get in</h2>
+  {% if user.is_admin %}
+  <label class="switch">
+    <input type="checkbox" role="switch" id="allow-signup" {% if values.allow_signup == '1' %}checked{% endif %} data-url="{{ url_for('main.settings_signup') }}">
+    <span class="track"></span>
+    <span>Let anyone who reaches this app make their own account</span>
+  </label>
+  <p class="hint">Leave this off unless you are about to hand the address to someone. With it off, you add people yourself below.</p>
+  {% endif %}
+
+  <ul class="user-list">
+    {% for u in users %}
+    <li>
+      <span class="user-name">{{ u.username }}{% if u.is_admin %} <span class="tag">runs this copy</span>{% endif %}{% if u.id == user.id %} <span class="tag you">you</span>{% endif %}</span>
+      {% if user.is_admin and u.id != user.id %}
+      <form action="{{ url_for('main.settings_delete_user', user_id=u.id) }}" method="post">
+        <button class="btn danger small two-step" type="submit" data-confirm="Yes, remove" title="Remove this account. Press once, then once more to confirm.">Remove</button>
+      </form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if user.is_admin %}
+  <details class="add-user">
+    <summary>Add someone</summary>
+    <form action="{{ url_for('main.settings_add_user') }}" method="post">
+      <label for="new-username">Name</label>
+      <input id="new-username" name="username" type="text" maxlength="40" required autocapitalize="none" autocomplete="off">
+      <label for="user-password">First password <span class="hint">at least 8 characters, they can change it</span></label>
+      <input id="user-password" name="password" type="text" required minlength="8" autocomplete="off">
+      <label class="field-check">
+        <input type="checkbox" name="is_admin" value="1">
+        <span>Let them change these settings too</span>
+      </label>
+      <button class="btn big" type="submit">Create account</button>
+    </form>
+  </details>
+  {% endif %}
+</section>
+
+<section class="panel" id="about">
+  <h2 class="panel-head">About</h2>
+  <p class="hint">
+    Where {{ app_version.split('-')[0] }}, in beta.
+    <a href="https://where.lightmorphic.com/">Website</a> ·
+    <a href="https://github.com/lightmorphic/where">Source</a> ·
+    <a href="https://github.com/lightmorphic/where/issues">Report a problem</a>
+  </p>
+  <form action="{{ url_for('main.logout') }}" method="post" class="signout">
+    <button class="btn big" type="submit">Sign out</button>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}<script>Where.settingSwitch('allow-signup','allow_signup');</script>{% endblock %}

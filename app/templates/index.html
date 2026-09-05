@@ -42,6 +42,7 @@
 </div>
 
 <p class="hint status-line">
-  {% if model.ok %}✓ Photo descriptions on ({{ model.detail or 'model ready' }}){% else %}! Photo descriptions off: {{ model.detail or 'model not ready' }}. Items still save; descriptions fill in once it is back.{% endif %}
+  {% if model.ok %}✓ Photo descriptions on{% else %}! Photo descriptions off: {{ model.detail }}. Items still save; descriptions fill in once it is back.{% endif %}
+  <a href="/settings">Settings</a>
 </p>
 {% endblock %}

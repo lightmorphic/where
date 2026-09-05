@@ -40,6 +40,21 @@ window.Where = (function () {
     });
   }
 
+  // A switch that saves itself, used by the Settings page.
+  function settingSwitch(id, field) {
+    var sw = document.getElementById(id);
+    if (!sw) return;
+    sw.addEventListener('change', function () {
+      var body = {};
+      body[field] = sw.checked;
+      fetch(sw.dataset.url, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }).then(function (r) { if (!r.ok) throw new Error(); })
+        .catch(function () { sw.checked = !sw.checked; });
+    });
+  }
+
   function goneSwitch(id) {
     var sw = document.getElementById(id);
     if (!sw) return;
@@ -107,5 +122,5 @@ window.Where = (function () {
     document.getElementById(noneId).addEventListener('click', function () { set(false); });
   }
 
-  return { photoPreview: photoPreview, goneSwitch: goneSwitch, watchDescription: watchDescription, bulkPage: bulkPage, pickAll: pickAll };
+  return { photoPreview: photoPreview, goneSwitch: goneSwitch, settingSwitch: settingSwitch, watchDescription: watchDescription, bulkPage: bulkPage, pickAll: pickAll };
 })();

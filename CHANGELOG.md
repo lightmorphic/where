@@ -2,6 +2,17 @@
 
 All notable changes to Where are recorded here.
 
+## [0.2.0] — 2026-09-05
+
+A breaking change to how Where is set up. Nothing is configured in
+`docker-compose.yml` any more, and the app now asks you to sign in.
+
+- **Accounts.** Everyone signs in with their own name and password and shares one list of places and items, because two people in the same house need to find the same cable. The first account created runs the copy: it changes the settings and adds or removes everyone else. Self-service sign-up is off unless you switch it on.
+- **A Settings page.** The model, its address, how long to wait for one photograph, the address printed into QR labels and who may sign in all live in the app now.
+- **No configuration in the compose file and no `.env` file.** Only the port to open the app on and the folder your data lives in are left, because neither can be set from inside a running container. If you are upgrading, delete your `.env`, replace the compose file with the one in the README, and put your old settings in on the Settings page.
+- The timezone setting has gone. Nothing in Where displays a time, so it did nothing.
+- Collapsible sections now show an arrow, and password fields are full width.
+
 ## [0.1.4] — 2026-09-05
 
 - Label names now sit on one line wherever they will fit, shrinking to suit, and only wrap when a single line would be too small to read. A word is never split.

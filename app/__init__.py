@@ -1,10 +1,11 @@
+import datetime
 import logging
 import os
 
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from . import config, db, vision
+from . import auth, config, db, vision
 
 
 def version():
@@ -35,8 +36,17 @@ def create_app(start_worker=True):
     app.jinja_env.globals["app_version"] = version() + "-" + str(int(_static_mtime()))
 
     db.init()
+
+    app.secret_key = auth.secret_key()
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    # Lax stops another site posting a form into this one on your behalf.
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    app.permanent_session_lifetime = datetime.timedelta(days=90)
+
     from .routes import bp
     app.register_blueprint(bp)
+    app.before_request(auth.load_user)
+    app.before_request(auth.require_login)
 
     if start_worker:
         vision.start()

@@ -1,0 +1,25 @@
+{% extends "auth_layout.html" %}
+{% block title %}Sign in — Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Sign in</h1>
+  <p class="hint">Everyone signed in shares the same places and items.</p>
+</div>
+
+<form class="panel item-form" action="{{ url_for('main.login') }}" method="post">
+  {% if error %}<p class="form-error">! {{ error }}</p>{% endif %}
+  <input type="hidden" name="next" value="{{ next }}">
+
+  <label for="username">Name</label>
+  <input id="username" name="username" type="text" value="{{ username }}" maxlength="40" required autocomplete="username" autocapitalize="none" autofocus>
+
+  <label for="password">Password</label>
+  <input id="password" name="password" type="password" required autocomplete="current-password">
+
+  <button class="btn primary big" type="submit">Sign in</button>
+</form>
+
+{% if open_to_all %}
+<p class="hint gate-alt">No account yet? <a href="{{ url_for('main.signup') }}">Make one</a>.</p>
+{% endif %}
+{% endblock %}
