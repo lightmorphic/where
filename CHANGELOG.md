@@ -7,7 +7,7 @@ All notable changes to Where are recorded here.
 - Label names now sit on one line wherever they will fit, shrinking to suit, and only wrap when a single line would be too small to read. A word is never split.
 - Items with no photograph show a small box outline instead of an empty grey square.
 - Searching no longer reopens the phone keyboard over your results.
-- Added the project website at [where.lightmorphic.com](https://where.lightmorphic.com/).
+- Added the project website at [where.lightmorphic.com](https://where.lightmorphic.com/), with privacy enquiries going to privacy@lightmorphic.com and complaints to complaints@lightmorphic.com.
 
 ## [0.1.3] — 2026-09-05
 
