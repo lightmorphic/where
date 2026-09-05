@@ -2,6 +2,10 @@
 
 All notable changes to Where are recorded here.
 
+## [0.2.1] — 2026-09-05
+
+- If Where cannot write to its data folder it now says so in one readable line, names the user it runs as, and gives you the command to fix it, instead of repeating a stack trace until you give up. This is what happens when the folder on the host belongs to root, which is what Docker does if you delete it.
+
 ## [0.2.0] — 2026-09-05
 
 A breaking change to how Where is set up. Nothing is configured in
