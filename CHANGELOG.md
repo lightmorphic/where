@@ -2,6 +2,11 @@
 
 All notable changes to Where are recorded here.
 
+## [0.2.3] — 2026-09-05
+
+- **The app no longer pretends to be online.** If the server cannot be reached, you now get a page that says so and explains the usual reasons. Before this, a saved copy of a page was shown instead, which looked perfectly normal until you filled a form in and it hung. Nothing you type is ever saved on the device.
+- **Every request is written to the container log**, one short line each, so it is possible to tell "the app is broken" apart from "nothing ever reached the app". Pictures and the stylesheet are left out so the log stays readable.
+
 ## [0.2.2] — 2026-09-05
 
 - **`docker compose up -d` now works on a fresh machine with nothing else to do.** The container starts as root only long enough to hand its data folder to the unprivileged user it runs as, then gives up root for good before serving anything. No folders to make in advance, no `chown`, and deleting the data folder no longer leaves the app unable to start. Add `user: "1000:1000"` to the service if you would rather it never started as root.

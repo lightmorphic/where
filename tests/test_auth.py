@@ -138,3 +138,8 @@ def test_change_your_own_password(client):
     r = client.post("/login", data={"username": "charlie", "password": "newpassword1"},
                     follow_redirects=True)
     assert b"Places" in r.data
+
+
+def test_the_offline_page_needs_no_account(anon):
+    r = anon.get("/offline")
+    assert r.status_code == 200 and b"Cannot reach Where" in r.data

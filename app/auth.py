@@ -13,7 +13,7 @@ MIN_PASSWORD = 8
 
 # Pages anyone can reach without signing in.
 PUBLIC_ENDPOINTS = {"main.login", "main.signup", "main.health", "main.manifest",
-                    "main.service_worker", "static"}
+                    "main.service_worker", "main.offline", "static"}
 
 
 def secret_key():
