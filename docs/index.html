@@ -470,9 +470,23 @@
     <div class="section-head">
       <h2>Running in about five minutes</h2>
       <p>
-        You need Docker. Nothing else, and no accounts anywhere. The vision
-        model downloads itself the first time it is needed, which is about
-        1.7&nbsp;GB for the default.
+        You need Docker. Nothing else, and no accounts anywhere.
+      </p>
+    </div>
+
+    <div class="note">
+      <h3>It downloads about 5.5&nbsp;GB, and most of it is not Where</h3>
+      <p>
+        Worth knowing before you watch the numbers climb. Where itself is
+        60&nbsp;MB. Almost all of the rest is <b>Ollama</b>, the program that
+        reads your photographs, which is 3.7&nbsp;GB because it ships with
+        support for every kind of graphics card whether you have one or not.
+        The vision model is a further 1.7&nbsp;GB and arrives later, the first
+        time you add a photograph, rather than during the install.
+      </p>
+      <p>
+        Expect roughly 11&nbsp;GB on disk once it has all settled. It happens
+        once: updating Where after that pulls a few tens of megabytes.
       </p>
     </div>
     <ol class="steps">
@@ -586,6 +600,9 @@
 
       <dt>Where do I configure it?</dt>
       <dd>On the Settings page inside the app. The model, its address, how long to wait for a photograph, the address printed into QR labels and who may sign in are all there. There is no <code>.env</code> file, and the only things in the compose file are the port to open it on and the folder your data lives in, because neither can be changed from inside a running container.</dd>
+
+      <dt>Why is the download so big?</dt>
+      <dd>Because of Ollama, not Where. Where is 60&nbsp;MB. Ollama, which reads your photographs, is 3.7&nbsp;GB because it ships with support for every kind of graphics card. The vision model adds another 1.7&nbsp;GB the first time you add a photograph. That is about 5.5&nbsp;GB in total and roughly 11&nbsp;GB on disk, once, after which updates are a few tens of megabytes. If you already run Ollama on another machine you can point Where at it in Settings and skip the large part entirely.</dd>
 
       <dt>Which model should I use?</dt>
       <dd>Moondream is the default because it is small, quick and runs without a graphics card. It writes a good short description of a single item. It is weaker at listing everything in a tray photograph, so if that part disappoints, set <code>OLLAMA_MODEL=minicpm-v</code> in your settings file and restart. The new model downloads itself.</dd>

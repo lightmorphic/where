@@ -49,6 +49,15 @@ No cloud AI provider is involved and there is no API key to supply. The website
 sets no cookies and carries no analytics. The app sets one cookie, which keeps
 you signed in on your own server.
 
+## Download size
+
+About 5.5 GB on first install, and almost none of it is Where. The Where image
+is 60 MB. The Ollama image is 3.7 GB because it bundles support for every kind
+of graphics card. The vision model adds a further 1.7 GB, downloaded on the
+first photograph rather than during install. Roughly 11 GB on disk once
+settled; later updates are tens of megabytes. Pointing Where at an existing
+Ollama elsewhere on the network avoids the large part.
+
 ## Running it
 
 Docker, two containers (the app and Ollama), one bind-mounted folder holding a
