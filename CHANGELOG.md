@@ -2,6 +2,10 @@
 
 All notable changes to Where are recorded here.
 
+## [0.1.3] — 2026-09-05
+
+- If the model cannot describe an item under the name you gave it, the app asks again without the name rather than giving up.
+
 ## [0.1.2] — 2026-09-05
 
 - Dark mode is now the default, with a switch in the top corner that remembers your choice.
