@@ -17,16 +17,16 @@ _queue = queue.Queue()
 _started = False
 _state = {"ok": None, "checked": 0, "detail": ""}
 
+# Small vision models follow short, plain instructions and fall apart on long
+# ones, so keep these terse. Verified against moondream.
 DESCRIBE_PROMPT = (
-    "This photo shows an item called \"{name}\". In one short sentence, list only the "
-    "details that would tell it apart from other similar items: colour, size, shape, "
-    "connectors, markings, brand. Do not repeat the name. Do not describe the background."
+    "Describe the \"{name}\" in this photo in one short sentence. "
+    "Mention its colour, size and shape."
 )
 
 BULK_PROMPT = (
-    "List every separate object you can see in this photo. Write one object per line "
-    "with a short plain name, such as \"USB-C cable\" or \"AA batteries\". "
-    "Do not describe the tray, box, table or background. Do not number the lines."
+    "List the objects in this photo. One short name per line, such as "
+    "\"USB-C cable\" or \"AA batteries\". No numbering, no sentences."
 )
 
 
@@ -59,7 +59,9 @@ def generate(prompt, image_path, max_tokens=80):
             "stream": False,
             # Small models happily ramble in circles; cap the length and keep
             # the sampling tight so the answer stays factual.
-            "options": {"num_predict": max_tokens, "temperature": 0.2, "repeat_penalty": 1.3},
+            # A repeat penalty starves these small models and they answer with
+            # a single word, so cap the length and lower the temperature instead.
+            "options": {"num_predict": max_tokens, "temperature": 0.1},
         },
         timeout=config.OLLAMA_TIMEOUT,
     )
@@ -106,6 +108,7 @@ LEAD_IN = re.compile(
 
 def clean_sentence(text):
     text = re.sub(r"\s+", " ", text).strip()
+    text = text.lstrip("!?*-–—•\"' .,:;")
     text = LEAD_IN.sub("", text)
     text = dedupe_fragments(text)
     text = text.strip(" ,;.")
@@ -115,6 +118,13 @@ def clean_sentence(text):
     if text:
         text = text[0].upper() + text[1:]
     return text
+
+
+def usable(text):
+    """Guard against the junk a small model sometimes returns instead of a
+    description, so nothing meaningless is stored on the item."""
+    letters = sum(c.isalpha() for c in text)
+    return letters >= 8 and len(text.split()) >= 2
 
 
 def dedupe_fragments(text):
@@ -175,6 +185,11 @@ def _describe(item_id):
     try:
         ensure_model()
         text = clean_sentence(generate(DESCRIBE_PROMPT.format(name=item["name"]), photos.path(item["photo"])))
+        if not usable(text):
+            log.info("item %s: model gave nothing usable (%r)", item_id, text)
+            with db.db() as conn:
+                db.set_description(conn, item_id, "", "failed")
+            return
         with db.db() as conn:
             db.set_description(conn, item_id, text, "done")
     except Exception as exc:
