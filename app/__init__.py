@@ -5,7 +5,7 @@ import os
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from . import auth, config, db, vision
+from . import auth, config, db, vision, wsgi_log
 
 
 def version():
@@ -30,7 +30,7 @@ def _static_mtime():
 def create_app(start_worker=True):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
     app = Flask(__name__, static_folder="static", template_folder="templates")
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    app.wsgi_app = wsgi_log.AccessLog(ProxyFix(app.wsgi_app, x_proto=1, x_host=1))
     app.config["MAX_CONTENT_LENGTH"] = 40 * 1024 * 1024
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 3600
     app.jinja_env.globals["app_version"] = version() + "-" + str(int(_static_mtime()))

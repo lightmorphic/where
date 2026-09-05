@@ -1,0 +1,23 @@
+{% extends "auth_layout.html" %}
+{% block title %}Cannot reach Where{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Cannot reach Where</h1>
+  <p class="hint">Your phone is showing this, not the server.</p>
+</div>
+
+<div class="panel empty">
+  <p>
+    Nothing you type here would be saved, so the app is not pretending
+    otherwise. The usual reasons are:
+  </p>
+  <ul class="plain-reasons">
+    <li>You are off the network the server is on. If you reach it over Tailscale, check Tailscale is connected.</li>
+    <li>The server, or Where itself, is switched off.</li>
+    <li>The address it is served on has changed.</li>
+  </ul>
+  <p class="hint">This page is kept on your device so it can be shown without a connection.</p>
+</div>
+
+<button class="btn primary big" type="button" onclick="location.reload()">Try again</button>
+{% endblock %}

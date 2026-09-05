@@ -448,6 +448,13 @@ def photo(name):
     return send_from_directory(os.path.abspath(config.PHOTO_DIR), name, max_age=86400)
 
 
+@bp.route("/offline")
+def offline():
+    """Kept on the device by the service worker and shown when the server
+    cannot be reached, so a form never quietly hangs."""
+    return render_template("offline.html")
+
+
 @bp.route("/manifest.webmanifest")
 def manifest():
     resp = send_from_directory(os.path.join(bp.root_path, "static"), "manifest.webmanifest")

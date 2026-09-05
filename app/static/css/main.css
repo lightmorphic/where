@@ -273,6 +273,9 @@ details[open] > summary::before { transform: rotate(90deg); }
   h1 { font-size: 2rem; }
 }
 
+.plain-reasons { margin: .75rem 0; padding-left: 1.25rem; }
+.plain-reasons li { margin-bottom: .5rem; }
+
 /* --------------------------------------------------- sign in and sign up */
 
 body.plain { padding-bottom: 2rem; }
