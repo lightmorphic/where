@@ -25,6 +25,16 @@ A small self-hosted web app for one job: remembering which cupboard, shelf, box 
 
 You need Docker.
 
+> ### It downloads about 5.5 GB, and most of it is not Where
+>
+> Where itself is 60 MB. Almost all of the rest is Ollama, the program that
+> reads your photographs, which is 3.7 GB because it ships with support for
+> every kind of graphics card. The vision model is another 1.7 GB and arrives
+> later, the first time you add a photograph, not during `docker compose up`.
+> Expect roughly 11 GB on disk once everything has settled.
+>
+> This happens once. After that, updating Where pulls a few tens of megabytes.
+
 ```bash
 docker compose up -d
 ```
