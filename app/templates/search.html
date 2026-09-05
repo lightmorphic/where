@@ -4,7 +4,7 @@
 {% block content %}
 <form class="search-bar" action="/search" method="get" role="search">
   <label class="sr-only" for="q">Search for an item</label>
-  <input id="q" name="q" type="search" value="{{ q }}" placeholder="What are you looking for?" autocomplete="off" enterkeyhint="search" autofocus>
+  <input id="q" name="q" type="search" value="{{ q }}" placeholder="What are you looking for?" autocomplete="off" enterkeyhint="search" {% if not q %}autofocus{% endif %}>
   <button class="btn primary" type="submit">Find</button>
   {% if include_gone %}<input type="hidden" name="gone" value="1">{% endif %}
 </form>

@@ -2,6 +2,13 @@
 
 All notable changes to Where are recorded here.
 
+## [0.1.4] — 2026-09-05
+
+- Label names now sit on one line wherever they will fit, shrinking to suit, and only wrap when a single line would be too small to read. A word is never split.
+- Items with no photograph show a small box outline instead of an empty grey square.
+- Searching no longer reopens the phone keyboard over your results.
+- Added the project website at [where.lightmorphic.com](https://where.lightmorphic.com/).
+
 ## [0.1.3] — 2026-09-05
 
 - If the model cannot describe an item under the name you gave it, the app asks again without the name rather than giving up.

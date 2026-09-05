@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where: a self-hosted finder for the things in your home</title>
+<meta name="description" content="Where remembers which cupboard, shelf, box or tray a thing is in. Photograph an item, type its name, and a vision model running on your own server writes the detail that tells it apart. Free, open source, no cloud.">
+<link rel="canonical" href="https://where.lightmorphic.com/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/site.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Where">
+<meta property="og:title" content="Where: a self-hosted finder for the things in your home">
+<meta property="og:description" content="Which cupboard was that in? Where remembers. Photograph a thing, type its name, and your own server writes the detail that tells it apart.">
+<meta property="og:url" content="https://where.lightmorphic.com/">
+<meta property="og:image" content="https://where.lightmorphic.com/images/where-social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Where, a self-hosted finder for the things in your home.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Where: a self-hosted finder for the things in your home">
+<meta name="twitter:description" content="Which cupboard was that in? Where remembers. Photograph a thing, type its name, and your own server writes the detail that tells it apart.">
+<meta name="twitter:image" content="https://where.lightmorphic.com/images/where-social-card.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Where",
+      "url": "https://where.lightmorphic.com/",
+      "applicationCategory": "UtilitiesApplication",
+      "applicationSubCategory": "Home organiser",
+      "operatingSystem": "Linux, via Docker",
+      "description": "A self-hosted web app that records which cupboard, shelf, box or tray each thing in your home is in. Photographs are described by a vision model running on your own server, places get printable QR labels, and searching returns the item and where it is.",
+      "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+      "softwareVersion": "0.1.3",
+      "releaseNotes": "https://github.com/lightmorphic/where/blob/main/CHANGELOG.md",
+      "codeRepository": "https://github.com/lightmorphic/where",
+      "programmingLanguage": "Python",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+      "author": { "@id": "https://lightmorphic.com/#organisation" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://lightmorphic.com/#organisation",
+      "name": "Lightmorphic Ltd",
+      "url": "https://where.lightmorphic.com/",
+      "logo": "https://where.lightmorphic.com/favicon.svg",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "82A James Carter Road",
+        "addressLocality": "Mildenhall",
+        "postalCode": "IP28 7DE",
+        "addressCountry": "GB"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "hello@lightmorphic.co.uk"
+      },
+      "sameAs": ["https://github.com/lightmorphic"]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is Where finished?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. It is in beta. Everything described here works, but it is early software that has not yet been used for long by many people. Expect rough edges, and keep a copy of your data directory." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Where send my photographs anywhere?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Photographs are stored in a folder on your own server and described by Ollama, which also runs on your server. Nothing is sent to a cloud service and there is no account to make." }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if the vision model is switched off?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Items still save immediately. Only the automatic description is missing, and you can type one yourself or ask for it again later. Saving never waits for the model." }
+        },
+        {
+          "@type": "Question",
+          "name": "What size are the QR labels?",
+          "acceptedAnswer": { "@type": "Answer", "text": "30 by 20 millimetres, which is a common thermal label roll size, the sort sold for Amazon FBA. Each label is one page, so set the printer to that paper size with no margins. You can print one label or a whole batch." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it on my phone?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, that is the main way. It is a web app you can add to your phone's home screen. The camera opens straight from the add form, and scanning a place label with the camera opens that place. Camera access needs the app to be reached over https." }
+        },
+        {
+          "@type": "Question",
+          "name": "What hardware does it need?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The app itself is tiny. The vision model is the demanding part. Moondream is the default because it runs on a small machine with no graphics card, using about two and a half gigabytes of memory. A description takes a minute or two on a modest processor, which is why it happens in the background." }
+        },
+        {
+          "@type": "Question",
+          "name": "Where is my data kept?",
+          "acceptedAnswer": { "@type": "Answer", "text": "In one folder on your own server. A single SQLite database and a folder of photographs. Copy that folder and you have everything." }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Nothing. It is released under the GNU General Public Licence version 3. There is no paid tier and no hosted version to buy." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-nav">
+  <div class="wrap">
+    <a class="wordmark" href="/">
+      <img src="favicon.svg" alt="" width="30" height="30">
+      Where
+    </a>
+    <nav aria-label="Main">
+      <a href="#adding">Adding</a>
+      <a href="#labels">Labels</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/lightmorphic/where">Source</a>
+    </nav>
+  </div>
+</header>
+
+<div class="beta">
+  <div class="wrap">
+    <b>Beta</b>
+    <p>
+      Where is early software. Everything on this page works, but it has not yet
+      been through much use by many people, so expect rough edges and keep a copy
+      of your data folder. Problems are welcome on
+      <a href="https://github.com/lightmorphic/where/issues">the issue tracker</a>.
+    </p>
+  </div>
+</div>
+
+<main id="main">
+
+<div class="hero">
+  <div class="wrap hero-inner">
+    <h1>Which cupboard was that in?</h1>
+
+    <p class="lede">
+      Where is a small app for your own server that answers one question. Take a
+      photograph, type what the thing is, choose the place it lives, and stop
+      digging through the storage box. Searching gives you the plain answer:
+      <b>USB-C cable &mdash; Tray 14</b>.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#install">Put it on your server</a>
+      <a class="btn" href="https://github.com/lightmorphic/where">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        Read the source
+      </a>
+    </div>
+    <p class="hero-note">Free under the GPL. No account, no cloud, nothing to pay.</p>
+  </div>
+</div>
+
+<div class="stage wrap">
+  <figure class="phone">
+    <div class="shot">
+      <img src="images/where-search.webp"
+           alt="A search for the word usb in Where, returning two results. Each names the item and the place on one line, USB-C cable dash Tray 14, with a short description underneath saying black, right-angle plug, about a metre, and white, flat braided, very short."
+           width="840" height="1400" fetchpriority="high" decoding="async">
+    </div>
+    <figcaption>The whole point. Search a word, get the thing and where it is.</figcaption>
+  </figure>
+</div>
+
+<section id="adding" class="band">
+  <div class="wrap">
+    <div class="feature-lead">
+      <div>
+        <h2>The description writes itself</h2>
+        <p>
+          Most homes hold a dozen near-identical things. Typing &ldquo;USB-C
+          cable&rdquo; fifteen times tells you nothing later. So you type the
+          name and the photograph supplies the difference: <b>black,
+          right-angle plug, about a metre</b>.
+        </p>
+        <p>
+          That is done by a vision model running on your own server through
+          Ollama, not by a cloud service. The item saves the moment you press
+          the button and the description fills in when it is ready, so a slow
+          model never makes you wait. If the model is switched off the item
+          still saves perfectly well, and you can ask for the description
+          later or write your own. Anything it writes can be edited, and an
+          edit you make is never overwritten.
+        </p>
+      </div>
+      <figure class="phone">
+        <div class="shot">
+          <img src="images/where-add.webp"
+               alt="The add item form in Where on a phone. A large dashed box invites you to take a photo, with fields underneath for the name, the place and an optional note, and a full width Save button."
+               width="840" height="1760" loading="lazy" decoding="async">
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="bulk">
+  <div class="wrap">
+    <div class="feature-lead flip">
+      <figure class="phone">
+        <div class="shot">
+          <img src="images/where-bulk.webp"
+               alt="The add lots from one photo screen in Where. It explains that you photograph a whole tray, the app lists what it can see, and you tick what to keep before it all goes into one place."
+               width="840" height="1400" loading="lazy" decoding="async">
+        </div>
+      </figure>
+      <div>
+        <h2>A whole tray in one photograph</h2>
+        <p>
+          Entering things one at a time is why cataloguing never gets finished.
+          Photograph the whole tray instead. The model reads the picture and
+          comes back with a list of what it can see. You untick the mistakes,
+          correct the names, add anything it missed, and everything goes into
+          that place at once.
+        </p>
+        <p>
+          How well this works depends on the model you give it. Moondream, the
+          small default, is good at describing one item and weaker at listing a
+          crowded tray. One line in the settings file swaps it for a larger
+          model if your server has the memory.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="labels" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Stick a label on it</h2>
+      <p>
+        Every place gets a QR code. Point your phone at one and that place opens
+        with everything in it. Print one at a time, or tick several and get a
+        single sheet.
+      </p>
+    </div>
+    <figure>
+      <div class="shot">
+        <img src="images/where-labels.webp"
+             alt="A print sheet of QR labels in Where. Each label pairs a QR code with the place name in large bold text: Cupboard 1, Cupboard 2, Storage box, Top shelf, Tray 12, Tray 13."
+             width="2080" height="1010" loading="lazy" decoding="async">
+      </div>
+      <figcaption>
+        Sized for 30 &times; 20&nbsp;mm thermal labels, the common roll size. The
+        name shrinks to fit rather than breaking a word in half.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="phone">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Made for standing in front of a shelf</h2>
+      <p>
+        You will use this holding a phone in one hand. Add it to the home screen
+        and it opens like an app: dark by default, big tap targets, and the
+        camera one press away. It works just as well on a desktop, where the
+        camera button becomes a file picker.
+      </p>
+    </div>
+    <div class="phones">
+      <figure>
+        <div class="shot">
+          <img src="images/where-places.webp"
+               alt="The Where home screen listing places: Cupboard 1, Cupboard 2, Storage box, Top shelf, Tray 12, Tray 13, Tray 14 and Under the bed, each with a count of how many items are in it."
+               width="840" height="1760" loading="lazy" decoding="async">
+        </div>
+        <figcaption>Places are a flat list. No folders inside folders.</figcaption>
+      </figure>
+      <figure>
+        <div class="shot">
+          <img src="images/where-place.webp"
+               alt="The Tray 14 page in Where, listing an HDMI cable and two USB-C cables with their descriptions, a collapsed section for items marked gone, and buttons to add an item or add lots from one photo."
+               width="840" height="1440" loading="lazy" decoding="async">
+        </div>
+        <figcaption>Open a place and see what is in it.</figcaption>
+      </figure>
+      <figure>
+        <div class="shot">
+          <img src="images/where-scan.webp"
+               alt="The scan screen in Where, showing a camera viewfinder with a yellow frame and the instruction to point the camera at a place label."
+               width="840" height="1400" loading="lazy" decoding="async">
+        </div>
+        <figcaption>Scan a label to open its place.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Two things, and only two</h2>
+      <p>
+        Most home inventory apps ask what something cost, when you bought it and
+        which category it belongs to. Then adding one item takes two minutes and
+        you stop. Where holds a place and an item, and nothing else.
+      </p>
+    </div>
+    <ul class="plain-list">
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>A place is a name.</b> Cupboard 1, Top shelf, Storage box, Tray 14. No rooms, no nesting, no hierarchy to maintain.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>An item is a photograph, a name and a place.</b> Plus a description you did not have to write, and a note for things that wander, like &ldquo;usually on the desk&rdquo;.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>Used up or thrown out becomes one switch.</b> The item drops out of lists and searches but is kept, so the record stays honest instead of quietly wrong.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No value, purchase date, supplier, receipt, warranty or quantity.</b> This is not an insurance record and it will not become one.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No categories and no tags.</b> Search reads the name, the description and the note, which is what you would have typed into a tag anyway.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No accounts and no users.</b> One household, one list, reached over your own network.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Photographs of your home stay in your home</h2>
+      <p>
+        The whole point of describing pictures locally is that pictures of your
+        cupboards are nobody else's business.
+      </p>
+    </div>
+    <ul class="plain-list">
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>The vision model runs on your server.</b> Ollama starts alongside the app in the same compose file. Point it at another machine on your network if you would rather.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No cloud service of any kind.</b> No OpenAI, no Anthropic, no Google. There is no key to paste in because there is nothing to call.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No analytics, no telemetry, no third-party scripts</b>, in the app or on this page. Nothing on this site is loaded from anywhere else.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No cookies.</b> Whether you chose light or dark is remembered by your own browser and never sent to the server.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One folder to back up.</b> A single database file and a folder of photographs, both on a path you chose, both readable without the app running.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>Nothing is exposed to the internet.</b> There is no sign-in page because it is not meant to face outwards. Reach it over your own network, or something like Tailscale.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="install" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Running in about five minutes</h2>
+      <p>
+        You need Docker. Nothing else, and no accounts anywhere. The vision
+        model downloads itself the first time it is needed, which is about
+        1.7&nbsp;GB for the default.
+      </p>
+    </div>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>Make the folders</h3>
+          <p>
+            Where runs as a normal user inside the container, user ID 1000, so
+            the data folder on the host has to belong to that same ID or the app
+            cannot write to it.
+          </p>
+          <pre><code>sudo mkdir -p /opt/where/data /opt/where/ollama
+sudo chown -R 1000:1000 /opt/where/data</code></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Write the settings file</h3>
+          <p>
+            Save this as <code>.env</code> next to the compose file. Everything
+            you might want to change lives here, so you never have to edit the
+            compose file itself.
+          </p>
+          <pre><code>WHERE_PORT=4150
+WHERE_DATA=/opt/where
+OLLAMA_HOST=http://ollama:11434
+OLLAMA_MODEL=moondream
+WHERE_PUBLIC_URL=
+TZ=Europe/London</code></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Start it</h3>
+          <p>
+            Save this as <code>docker-compose.yml</code> and bring it up. The
+            second container is Ollama, which does the picture reading.
+          </p>
+          <pre><code>services:
+  where:
+    image: ghcr.io/lightmorphic/where:latest
+    container_name: where
+    restart: unless-stopped
+    ports:
+      - "${WHERE_PORT:-4150}:8080"
+    volumes:
+      - ${WHERE_DATA:-/opt/where}/data:/data
+    environment:
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-moondream}
+      WHERE_PUBLIC_URL: ${WHERE_PUBLIC_URL:-}
+      TZ: ${TZ:-Europe/London}
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: where-ollama
+    restart: unless-stopped
+    volumes:
+      - ${WHERE_DATA:-/opt/where}/ollama:/root/.ollama
+    environment:
+      OLLAMA_KEEP_ALIVE: "10m"</code></pre>
+          <pre><code>docker compose up -d</code></pre>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Name your first place, add your first thing</h3>
+          <p>
+            Open it on port 4150. Add a place, press <b>Add item here</b>, take
+            a photograph and type what it is. The front page tells you whether
+            the vision model is ready; the first description takes longer while
+            the model downloads.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Reach it from your phone over https</h3>
+          <p>
+            Browsers only allow camera access on a secure address. Something
+            like <a href="https://tailscale.com/kb/1242/tailscale-serve">Tailscale Serve</a>
+            gives you one without opening anything to the internet. On plain
+            <code>http</code> you can still choose a photograph from the
+            gallery, but live QR scanning will not start.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2>What it deliberately does not do</h2>
+      <p>Worth knowing before you spend those five minutes.</p>
+    </div>
+    <ul class="plain-list">
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It is not an inventory system.</b> No prices, no purchase dates, no receipts, no insurance fields. If you need those, this is the wrong tool.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It does not look things up online.</b> No barcode scanning against a retail database. The photograph and your own words are the record.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>There is no sign-in.</b> Anyone who can reach the address can use it, which is why it belongs on a private network and not on the open internet.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It does not track lending.</b> No record of who borrowed what. It tells you where a thing lives, not where it went.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>It is not hosted for you.</b> There is no signup page and no service to join. You run it yourself or you do not run it.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="faq" class="band">
+  <div class="wrap">
+    <div class="section-head"><h2>Questions people ask</h2></div>
+    <dl class="faq">
+      <dt>Is Where finished?</dt>
+      <dd>No. It is in beta. Everything on this page works, but it is early software that has not yet been used for long by many people. Expect rough edges, and keep a copy of your data folder.</dd>
+
+      <dt>Does Where send my photographs anywhere?</dt>
+      <dd>No. Photographs are stored in a folder on your own server and described by Ollama, which also runs on your server. Nothing is sent to a cloud service and there is no account to make.</dd>
+
+      <dt>What happens if the vision model is switched off?</dt>
+      <dd>Items still save immediately. Only the automatic description is missing, and you can type one yourself or ask for it again later. Saving never waits for the model.</dd>
+
+      <dt>Which model should I use?</dt>
+      <dd>Moondream is the default because it is small, quick and runs without a graphics card. It writes a good short description of a single item. It is weaker at listing everything in a tray photograph, so if that part disappoints, set <code>OLLAMA_MODEL=minicpm-v</code> in your settings file and restart. The new model downloads itself.</dd>
+
+      <dt>What hardware does it need?</dt>
+      <dd>The app itself is tiny. The vision model is the demanding part. Moondream uses about two and a half gigabytes of memory and needs no graphics card. On a modest processor a description takes a minute or two, which is exactly why the app never makes you wait for one.</dd>
+
+      <dt>What size are the QR labels?</dt>
+      <dd>30 by 20 millimetres, a common thermal label roll size, the sort sold for Amazon FBA. Each label is one page, so set the printer to that paper size with no margins. You can print a single label or tick several places and get one sheet.</dd>
+
+      <dt>Can I use it on my phone?</dt>
+      <dd>Yes, that is the main way. Add it to your home screen and it opens like an app. The camera opens straight from the add form, and scanning a place label opens that place. Camera access needs the app to be reached over https.</dd>
+
+      <dt>Where is my data kept?</dt>
+      <dd>In one folder on your own server: a single SQLite database and a folder of photographs. Copy that folder and you have everything. The downloaded model sits in a separate folder and can always be fetched again.</dd>
+
+      <dt>What does it cost?</dt>
+      <dd>Nothing. It is released under the GNU General Public Licence version 3, so you can run it, read it and change it. There is no paid tier and no hosted version to buy.</dd>
+
+      <dt>How do I update it?</dt>
+      <dd>Run <code>docker compose pull</code>, then <code>docker compose down</code> and <code>docker compose up -d</code>. A plain <code>up -d</code> will not fetch a newer image on its own.</dd>
+
+      <dt>What is it built with?</dt>
+      <dd>Python and Flask, with SQLite for storage and plain CSS for the interface. No JavaScript framework and no build step. It is small enough to read in an evening.</dd>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <a class="wordmark" href="/" style="margin-bottom:.75rem"><img src="favicon.svg" alt="" width="30" height="30">Where</a>
+        <p>
+          A self-hosted finder for the things in your home. Made by Lightmorphic
+          and given away under the GPL.
+        </p>
+      </div>
+      <div>
+        <h3>The project</h3>
+        <ul>
+          <li><a href="https://github.com/lightmorphic/where">Source code</a></li>
+          <li><a href="https://github.com/lightmorphic/where/blob/main/CHANGELOG.md">What changed</a></li>
+          <li><a href="https://github.com/lightmorphic/where/issues">Report a problem</a></li>
+          <li><a href="https://github.com/lightmorphic/where/blob/main/LICENSE">Licence</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>On this page</h3>
+        <ul>
+          <li><a href="#adding">Adding things</a></li>
+          <li><a href="#labels">Labels</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-footer">
+    <div class="wrap">
+      <p>
+        &copy; Lightmorphic Ltd. Registered in England and Wales, company number
+        <a href="https://find-and-update.company-information.service.gov.uk/company/17423646">17423646</a>.
+        Registered office: 82A James Carter Road, Mildenhall, IP28 7DE.
+        Contact <a href="mailto:hello@lightmorphic.co.uk">hello@lightmorphic.co.uk</a>.
+        Where is released under the
+        <a href="https://github.com/lightmorphic/where/blob/main/LICENSE">GNU General Public Licence version 3</a>.
+      </p>
+      <p>
+        Screenshots show version 0.1.3 with made-up example contents. Ollama and
+        Moondream are separate projects with their own licences and are not
+        affiliated with Lightmorphic.
+      </p>
+      <p>Page last updated <time datetime="2026-09-05">5 September 2026</time>.</p>
+      <nav aria-label="Legal">
+        <a href="privacy.html">Privacy</a>
+        <a href="cookies.html">Cookies</a>
+        <a href="terms.html">Terms</a>
+        <a href="accessibility.html">Accessibility</a>
+        <a href="complaints.html">Complaints</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

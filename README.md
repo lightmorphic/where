@@ -2,6 +2,13 @@
 
 *Where did I put that thing?*
 
+> **Beta.** Where is early software. Everything described here works, but it has
+> not yet been through much use by many people, so expect rough edges and keep a
+> copy of your data folder. Problems are welcome on the
+> [issue tracker](https://github.com/lightmorphic/where/issues).
+
+**Website: [where.lightmorphic.com](https://where.lightmorphic.com/)**
+
 A small self-hosted web app for one job: remembering which cupboard, shelf, box or tray a thing is in. Not an inventory system. No prices, no receipts, no categories. Adding an item takes a photo and a name.
 
 - **Places** are a flat list: "Cupboard 1", "Top shelf", "Storage box", "Tray 14".
