@@ -90,6 +90,14 @@ def test_bulk_flow_with_model_down(client):
     assert b"Screwdriver" in r.data and b"Pliers" in r.data and b"junk" not in r.data
 
 
+def test_clean_sentence_strips_lead_in_and_loops():
+    looped = "The image shows a black, rectangular, USB-C, black, rectangular, USB-C, black."
+    assert vision.clean_sentence(looped) == "Black, rectangular, USB-C"
+    assert vision.clean_sentence("  A  short   one  ") == "A short one"
+    long = vision.clean_sentence("word " * 200)
+    assert len(long) <= 300 and not long.endswith("wor")
+
+
 def test_parse_list_cleans_model_output():
     text = "1. USB-C cable\n- AA batteries, four of them\n* Tray\n\nScrewdriver.\nusb-c cable"
     assert vision.parse_list(text) == ["USB-C cable", "AA batteries", "Screwdriver"]

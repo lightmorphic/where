@@ -2,6 +2,12 @@
 
 All notable changes to Where are recorded here.
 
+## [0.1.1] — 2026-09-05
+
+- Dark mode is now the default, with a switch in the top corner that remembers your choice.
+- Label text never splits a word across lines. The name shrinks to fit instead, measured after the font has loaded.
+- Photo descriptions no longer repeat themselves. Output is capped, looping phrases are dropped, and the text is cut at a whole word.
+
 ## [0.1.0] — 2026-09-04
 
 First working version.
