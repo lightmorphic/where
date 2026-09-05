@@ -24,6 +24,10 @@ DESCRIBE_PROMPT = (
     "Mention its colour, size and shape."
 )
 
+# Naming the item helps when the name matches what is in the photo, and makes
+# the model give up entirely when it does not, so there is a plain fallback.
+FALLBACK_PROMPT = "Describe the main object in this photo in one short sentence."
+
 BULK_PROMPT = (
     "List the objects in this photo. One short name per line, such as "
     "\"USB-C cable\" or \"AA batteries\". No numbering, no sentences."
@@ -184,7 +188,10 @@ def _describe(item_id):
         return
     try:
         ensure_model()
-        text = clean_sentence(generate(DESCRIBE_PROMPT.format(name=item["name"]), photos.path(item["photo"])))
+        path = photos.path(item["photo"])
+        text = clean_sentence(generate(DESCRIBE_PROMPT.format(name=item["name"]), path))
+        if not usable(text):
+            text = clean_sentence(generate(FALLBACK_PROMPT, path))
         if not usable(text):
             log.info("item %s: model gave nothing usable (%r)", item_id, text)
             with db.db() as conn:
