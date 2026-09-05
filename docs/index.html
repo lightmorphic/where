@@ -36,7 +36,7 @@
       "operatingSystem": "Linux, via Docker",
       "description": "A self-hosted web app that records which cupboard, shelf, box or tray each thing in your home is in. Photographs are described by a vision model running on your own server, places get printable QR labels, and searching returns the item and where it is.",
       "license": "https://www.gnu.org/licenses/gpl-3.0.html",
-      "softwareVersion": "0.2.1",
+      "softwareVersion": "0.2.2",
       "releaseNotes": "https://github.com/lightmorphic/where/blob/main/CHANGELOG.md",
       "codeRepository": "https://github.com/lightmorphic/where",
       "programmingLanguage": "Python",
@@ -478,23 +478,6 @@
     <ol class="steps">
       <li>
         <div>
-          <h3>Make the folders</h3>
-          <p>
-            Where runs as a normal user inside the container, user ID 1000, so
-            the data folder on the host has to belong to that same ID or the app
-            cannot write to it and will not start.
-          </p>
-          <pre><code>sudo mkdir -p /opt/where/data /opt/where/ollama
-sudo chown -R 1000:1000 /opt/where/data</code></pre>
-          <p>
-            If you ever delete that folder, Docker makes it again owned by root,
-            and you have to hand it back before Where will start. It says so in
-            the log if it happens.
-          </p>
-        </div>
-      </li>
-      <li>
-        <div>
           <h3>Start it</h3>
           <p>
             Save this as <code>docker-compose.yml</code> and bring it up. That
@@ -521,6 +504,14 @@ sudo chown -R 1000:1000 /opt/where/data</code></pre>
     volumes:
       - /opt/where/ollama:/root/.ollama</code></pre>
           <pre><code>docker compose up -d</code></pre>
+          <p>
+            There are no folders to make first and nothing to hand ownership of.
+            The container starts as root only long enough to give its data
+            folder to the unprivileged user it runs as, then gives up root
+            before it serves anything. If you would rather it never started as
+            root, add <code>user: "1000:1000"</code> to the <code>where</code>
+            service and own the folder yourself.
+          </p>
         </div>
       </li>
       <li>
@@ -669,7 +660,7 @@ sudo chown -R 1000:1000 /opt/where/data</code></pre>
         <a href="https://github.com/lightmorphic/where/blob/main/LICENSE">GNU General Public Licence version 3</a>.
       </p>
       <p>
-        Screenshots show version 0.2.1 with made-up example contents. Ollama and
+        Screenshots show version 0.2.2 with made-up example contents. Ollama and
         Moondream are separate projects with their own licences and are not
         affiliated with Lightmorphic.
       </p>

@@ -26,19 +26,18 @@ A small self-hosted web app for one job: remembering which cupboard, shelf, box 
 You need Docker.
 
 ```bash
-sudo mkdir -p /opt/where/data /opt/where/ollama
-sudo chown -R 1000:1000 /opt/where/data
 docker compose up -d
 ```
 
-**Do not skip the second line.** Where runs as user 1000 inside the container, so
-the folder on the host has to belong to user 1000 or the app cannot write to it
-and will not start. If you ever delete the data folder, Docker recreates it owned
-by root, and you have to run that line again:
+That is all. The container starts as root only long enough to hand its data
+folder to the unprivileged user it runs as, then gives up root before serving
+anything, so a fresh host needs no `chown` and no folders made in advance.
+
+If you would rather it never started as root, add `user: "1000:1000"` to the
+`where` service. You then own the folder yourself before the first start:
 
 ```bash
-sudo chown -R 1000:1000 /opt/where/data
-docker compose up -d --force-recreate
+sudo mkdir -p /opt/where/data && sudo chown -R 1000:1000 /opt/where/data
 ```
 
 Then open `http://<your-server>:4150`. The first visit asks you to create an account, and that first account runs the place. The vision model downloads itself the first time it is needed (about 1.7 GB for Moondream), so the first description takes a while.
