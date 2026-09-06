@@ -130,6 +130,10 @@ p:last-child { margin-bottom: 0; }
   text-decoration: none;
 }
 .site-nav nav a:hover { background: var(--muted); color: var(--fg); }
+/* The all-apps launcher draws its own button inside a shadow root; this only
+   keeps the slot it mounts into lined up with the links beside it. */
+.site-nav nav #all-apps { display: inline-flex; align-items: center; min-height: 44px; }
+.sub-footer nav a:last-child { padding-right: 0; }
 
 /* ----------------------------------------------------------------- hero */
 

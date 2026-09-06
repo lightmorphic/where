@@ -36,7 +36,7 @@
       <a href="index.html#labels">Labels</a>
       <a href="index.html#privacy">Privacy</a>
       <a href="index.html#install">Install</a>
-      <a href="https://github.com/lightmorphic/where">Source</a>
+      <div id="all-apps"></div>
     </nav>
   </div>
 </header>
@@ -62,8 +62,13 @@
       <p>
         None. Not one, first-party or otherwise. There is no consent banner here
         because there is nothing to consent to. The pages are static files with a
-        stylesheet, a font and some pictures, all served from this domain, and
-        nothing is loaded from anywhere else.
+        stylesheet, a font and some pictures, served from this domain.
+      </p>
+      <p>
+        The grid of dots at the top of the page, which lists Lightmorphic's
+        other apps, is loaded from apps.lightmorphic.com. It is our own script
+        on our own server, it sets no cookies and it stores nothing on your
+        device. The <a href="privacy.html">privacy page</a> says what it does.
       </p>
 
       <h2>In the software</h2>
@@ -109,8 +114,9 @@
         Where is released under the
         <a href="https://github.com/lightmorphic/where/blob/main/LICENSE">GNU General Public Licence version 3</a>.
       </p>
-      <p>Page last updated <time datetime="2026-09-05">5 September 2026</time>.</p>
-      <nav aria-label="Legal">
+      <p>Page last updated <time datetime="2026-09-06">6 September 2026</time>.</p>
+      <nav aria-label="More">
+        <a href="https://github.com/lightmorphic/where">Source</a>
         <a href="privacy.html">Privacy</a>
         <a href="cookies.html">Cookies</a>
         <a href="terms.html">Terms</a>
@@ -120,5 +126,6 @@
     </div>
   </div>
 </footer>
+<script src="https://apps.lightmorphic.com/launcher.js" defer></script>
 </body>
 </html>

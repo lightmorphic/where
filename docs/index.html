@@ -183,7 +183,7 @@
       <a href="#accounts">Accounts</a>
       <a href="#privacy">Privacy</a>
       <a href="#install">Install</a>
-      <a href="https://github.com/lightmorphic/where">Source</a>
+      <div id="all-apps"></div>
     </nav>
   </div>
 </header>
@@ -457,7 +457,7 @@
     <ul class="plain-list">
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>The vision model runs on your server.</b> Ollama starts alongside the app in the same compose file. Point it at another machine on your network if you would rather.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No cloud service of any kind.</b> No OpenAI, no Anthropic, no Google. There is no key to paste in because there is nothing to call.</span></li>
-      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No analytics, no telemetry, no third-party scripts</b>, in the app or on this page. Nothing on this site is loaded from anywhere else.</span></li>
+      <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No analytics, no telemetry, no third-party scripts</b>, in the app or on this page. The only thing here loaded from elsewhere is the grid of dots at the top, which lists Lightmorphic's other apps: our own script, on our own server, setting no cookies and watching nothing.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One cookie, and it is yours.</b> It keeps you signed in, on your own server. Whether you chose light or dark is remembered by your own browser and never sent anywhere.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One folder to back up.</b> A single database file and a folder of photographs, both on a path you chose, both readable without the app running.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>Meant for your own network.</b> Reach it over your home network or something like Tailscale. Signing in is a door, not a wall: do not put it on the open internet.</span></li>
@@ -681,8 +681,9 @@
         Moondream are separate projects with their own licences and are not
         affiliated with Lightmorphic.
       </p>
-      <p>Page last updated <time datetime="2026-09-05">5 September 2026</time>.</p>
-      <nav aria-label="Legal">
+      <p>Page last updated <time datetime="2026-09-06">6 September 2026</time>.</p>
+      <nav aria-label="More">
+        <a href="https://github.com/lightmorphic/where">Source</a>
         <a href="privacy.html">Privacy</a>
         <a href="cookies.html">Cookies</a>
         <a href="terms.html">Terms</a>
@@ -692,5 +693,6 @@
     </div>
   </div>
 </footer>
+<script src="https://apps.lightmorphic.com/launcher.js" defer></script>
 </body>
 </html>
