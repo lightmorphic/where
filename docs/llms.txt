@@ -46,8 +46,10 @@ a household can share one list, not so each person can keep a separate one.
 
 Nothing leaves the user's server. The vision model runs locally through Ollama.
 No cloud AI provider is involved and there is no API key to supply. The website
-sets no cookies and carries no analytics. The app sets one cookie, which keeps
-you signed in on your own server.
+sets no cookies and carries no analytics. Its only external asset is
+Lightmorphic's own app-launcher script from apps.lightmorphic.com, which sets
+no cookies and tracks nothing. The app sets one cookie, which keeps you signed
+in on your own server.
 
 ## Download size
 
