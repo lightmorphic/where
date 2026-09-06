@@ -78,9 +78,15 @@ p:last-child { margin-bottom: 0; }
 
 .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
 
+/* Anything a link in the menu jumps to has to clear the menu itself. */
+:target, section[id], div[id], main { scroll-margin-top: 5.5rem; }
+
 /* ------------------------------------------------------------------- nav */
 
-.site-nav { border-bottom: 1px solid var(--border); background: var(--bg); }
+.site-nav {
+  position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid var(--border); background: var(--bg);
+}
 .site-nav .wrap {
   display: flex; align-items: center; gap: 1.25rem;
   padding: 0.875rem 0; flex-wrap: wrap;
@@ -102,7 +108,7 @@ p:last-child { margin-bottom: 0; }
 .site-nav nav a:hover { background: var(--muted); color: var(--fg); }
 /* The all-apps launcher draws its own button inside a shadow root; this only
    keeps the slot it mounts into lined up with the links beside it. */
-.site-nav nav #all-apps { display: inline-flex; align-items: center; min-height: 44px; }
+.site-nav #all-apps { display: inline-flex; align-items: center; min-height: 44px; margin-left: 0.5rem; }
 
 /* ----------------------------------------------------------------- hero */
 
@@ -275,8 +281,14 @@ dl.faq dd { margin: 0; color: var(--muted-fg); max-width: var(--measure); }
   body { font-size: 1rem; }
   .wrap { width: min(100% - 1.75rem, 1120px); }
   .footer-cols { grid-template-columns: 1fr; }
-  .site-nav .wrap { gap: 0.75rem; }
-  .site-nav nav { margin-left: 0; width: 100%; }
+  /* Two rows, never three: the wordmark and the launcher share the first. */
+  .site-nav .wrap { gap: 0.25rem 0.75rem; padding: 0.5rem 0; }
+  .site-nav .wordmark { order: 1; }
+  .site-nav #all-apps { order: 2; margin-left: auto; }
+  .site-nav nav { order: 3; margin-left: 0; width: 100%; gap: 0; }
+  .site-nav nav a { padding: 0.25rem 0.625rem; min-height: 38px; font-size: 0.875rem; }
+  .wordmark { font-size: 1.0625rem; }
+  :target, section[id], div[id], main { scroll-margin-top: 7.5rem; }
   .btn { width: 100%; justify-content: center; }
   .hero-actions { width: 100%; }
 }
@@ -361,4 +373,10 @@ dl.faq dd { margin: 0; color: var(--muted-fg); max-width: var(--measure); }
 
 @media (max-width: 560px) {
   .beta .wrap { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+}
+
+/* The narrowest phones: keep the sticky menu to two rows. */
+@media (max-width: 380px) {
+  .site-nav nav a { padding: 0.25rem 0.375rem; font-size: 0.8125rem; }
+  :target, section[id], div[id], main { scroll-margin-top: 6.5rem; }
 }
