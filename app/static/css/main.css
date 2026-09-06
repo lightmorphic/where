@@ -7,50 +7,25 @@
 }
 
 :root {
-  color-scheme: light dark;
-  --bg: #ffffff;  --fg: #09090b;
-  --panel: #ffffff;  --panel-border: rgba(24, 24, 40, 0.10);
-  --border: #e4e4e7;  --muted: #f4f4f5;  --muted-fg: #71717a;
-  --shadow-panel: 0 1px 2px rgba(24,24,40,.05), 0 8px 24px -16px rgba(24,24,40,.18);
-  --accent: #fbc711;  --accent-hover: #ddaf0f;  --on-accent: #645007;
-  --accent-container: #fff8e2;  --on-accent-container: #5f4c06;
-  --brand-navy: #111827;
-  --link: #1b74bc;
-  --danger: #cc372d;   --danger-bg: #fef2f1;
-  --success: #38813a;  --success-bg: #f2f9f3;
-  --warning: #8f6c03;  --warning-bg: #fffbee;
-  --info: #1b74bc;     --info-bg: #f0f8fe;
-  --radius: 0.875rem;
-  --panel-radius: 1.375rem;
-  --nav-h: 4.25rem;
-  --chev-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6-6 6'/%3E%3C/svg%3E");
-  --box-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8l9-4 9 4v8l-9 4-9-4z'/%3E%3Cpath d='M3 8l9 4 9-4M12 12v8'/%3E%3C/svg%3E");
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #09090b;  --fg: #fafafa;
-    --panel: #1b1d29;  --panel-border: rgba(255,255,255,.09);
-    --border: #27272a;  --muted: #1c1c1f;  --muted-fg: #a1a1aa;
-    --shadow-panel: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -16px rgba(0,0,0,.6);
-    --accent-container: #4b3c05;  --on-accent-container: #fde694;
-    --link: #2295f1;
-    --danger: #f34236;   --danger-bg: #350f0c;
-    --success: #4bae4f;  --success-bg: #102611;
-    --warning: #ffc006;  --warning-bg: #382a01;
-    --info: #2295f1;     --info-bg: #072135;
-  }
-}
-:root[data-theme="dark"] {
+  color-scheme: dark;
   --bg: #09090b;  --fg: #fafafa;
   --panel: #1b1d29;  --panel-border: rgba(255,255,255,.09);
   --border: #27272a;  --muted: #1c1c1f;  --muted-fg: #a1a1aa;
   --shadow-panel: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -16px rgba(0,0,0,.6);
+  --accent: #fbc711;  --accent-hover: #ddaf0f;  --on-accent: #645007;
   --accent-container: #4b3c05;  --on-accent-container: #fde694;
+  --brand-navy: #111827;
   --link: #2295f1;
   --danger: #f34236;   --danger-bg: #350f0c;
   --success: #4bae4f;  --success-bg: #102611;
   --warning: #ffc006;  --warning-bg: #382a01;
   --info: #2295f1;     --info-bg: #072135;
+
+  --radius: 0.875rem;
+  --panel-radius: 1.375rem;
+  --nav-h: 4.25rem;
+  --chev-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6-6 6'/%3E%3C/svg%3E");
+  --box-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8l9-4 9 4v8l-9 4-9-4z'/%3E%3Cpath d='M3 8l9 4 9-4M12 12v8'/%3E%3C/svg%3E");
 }
 
 * { box-sizing: border-box; }
@@ -80,11 +55,6 @@ p:last-child { margin-bottom: 0; }
 .brand { display: inline-flex; align-items: center; gap: .5rem; color: var(--fg); text-decoration: none; font-weight: 800; font-size: 1.125rem; letter-spacing: -0.01em; }
 .brand svg { color: var(--accent); }
 .top-actions { display: flex; gap: .5rem; align-items: center; }
-.icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; background: var(--muted); color: var(--fg); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; }
-.icon-btn svg { width: 1.25rem; height: 1.25rem; }
-.icon-btn .sun { display: none; }
-:root[data-theme="dark"] .icon-btn .sun { display: block; }
-:root[data-theme="dark"] .icon-btn .moon { display: none; }
 
 .page { max-width: 44rem; margin: 0 auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.25rem; }
 .page-head { display: flex; flex-direction: column; gap: .25rem; }

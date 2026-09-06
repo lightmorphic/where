@@ -2,6 +2,10 @@
 
 All notable changes to Where are recorded here.
 
+## [0.3.0] — 2026-09-06
+
+- **One theme.** Where is dark, full stop. The light theme and the switch that chose between them are gone, along with every trace of them in the stylesheet, the templates and the script. Nothing is stored in your browser about how you like it to look.
+
 ## [0.2.3] — 2026-09-05
 
 - **The app no longer pretends to be online.** If the server cannot be reached, you now get a page that says so and explains the usual reasons. Before this, a saved copy of a page was shown instead, which looked perfectly normal until you filled a form in and it hung. Nothing you type is ever saved on the device.
@@ -31,7 +35,7 @@ A breaking change to how Where is set up. Nothing is configured in
 - Label names now sit on one line wherever they will fit, shrinking to suit, and only wrap when a single line would be too small to read. A word is never split.
 - Items with no photograph show a small box outline instead of an empty grey square.
 - Searching no longer reopens the phone keyboard over your results.
-- Added the project website at [where.lightmorphic.com](https://where.lightmorphic.com/), with privacy enquiries going to privacy@lightmorphic.com and complaints to complaints@lightmorphic.com.
+- Added the project website at [where.lightmorphic.com](https://where.lightmorphic.com/), carrying the privacy, cookies, terms, accessibility and complaints pages.
 
 ## [0.1.3] — 2026-09-05
 
