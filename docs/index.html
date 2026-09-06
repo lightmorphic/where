@@ -36,7 +36,7 @@
       "operatingSystem": "Linux, via Docker",
       "description": "A self-hosted web app that records which cupboard, shelf, box or tray each thing in your home is in. Photographs are described by a vision model running on your own server, places get printable QR labels, and searching returns the item and where it is.",
       "license": "https://www.gnu.org/licenses/gpl-3.0.html",
-      "softwareVersion": "0.2.3",
+      "softwareVersion": "0.3.0",
       "releaseNotes": "https://github.com/lightmorphic/where/blob/main/CHANGELOG.md",
       "codeRepository": "https://github.com/lightmorphic/where",
       "programmingLanguage": "Python",
@@ -63,18 +63,6 @@
         "postalCode": "IP28 7DE",
         "addressCountry": "GB"
       },
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "contactType": "customer support",
-          "email": "hello@lightmorphic.co.uk"
-        },
-        {
-          "@type": "ContactPoint",
-          "contactType": "Data Protection",
-          "email": "privacy@lightmorphic.com"
-        }
-      ],
       "sameAs": [
         "https://github.com/lightmorphic"
       ]
@@ -326,8 +314,8 @@
       <h2>Made for standing in front of a shelf</h2>
       <p>
         You will use this holding a phone in one hand. Add it to the home screen
-        and it opens like an app: dark by default, big tap targets, and the
-        camera one press away. It works just as well on a desktop, where the
+        and it opens like an app: dark, big tap targets, and the camera one
+        press away. It works just as well on a desktop, where the
         camera button becomes a file picker.
       </p>
     </div>
@@ -458,7 +446,7 @@
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>The vision model runs on your server.</b> Ollama starts alongside the app in the same compose file. Point it at another machine on your network if you would rather.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No cloud service of any kind.</b> No OpenAI, no Anthropic, no Google. There is no key to paste in because there is nothing to call.</span></li>
       <li><span class="cross" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No analytics, no telemetry, no third-party scripts</b>, in the app or on this page. The only thing here loaded from elsewhere is the grid of dots at the top, which lists Lightmorphic's other apps: our own script, on our own server, setting no cookies and watching nothing.</span></li>
-      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One cookie, and it is yours.</b> It keeps you signed in, on your own server. Whether you chose light or dark is remembered by your own browser and never sent anywhere.</span></li>
+      <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One cookie, and it is yours.</b> It keeps you signed in, on your own server. That is the only thing Where stores in your browser.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>One folder to back up.</b> A single database file and a folder of photographs, both on a path you chose, both readable without the app running.</span></li>
       <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg></span><span><b>Meant for your own network.</b> Reach it over your home network or something like Tailscale. Signing in is a door, not a wall: do not put it on the open internet.</span></li>
     </ul>
@@ -668,22 +656,15 @@
 
   <div class="sub-footer">
     <div class="wrap">
-      <p>
-        &copy; Lightmorphic Ltd. Registered in England and Wales, company number
-        <a href="https://find-and-update.company-information.service.gov.uk/company/17423646">17423646</a>.
-        Registered office: 82A James Carter Road, Mildenhall, IP28 7DE.
-        Contact <a href="mailto:hello@lightmorphic.co.uk">hello@lightmorphic.co.uk</a>.
-        Where is released under the
-        <a href="https://github.com/lightmorphic/where/blob/main/LICENSE">GNU General Public Licence version 3</a>.
-      </p>
-      <p>
-        Screenshots show version 0.2.3 with made-up example contents. Ollama and
-        Moondream are separate projects with their own licences and are not
-        affiliated with Lightmorphic.
-      </p>
-      <p>Page last updated <time datetime="2026-09-06">6 September 2026</time>.</p>
-      <nav aria-label="More">
-        <a href="https://github.com/lightmorphic/where">Source</a>
+      <div class="legal-text">
+        <p>
+          &copy; Lightmorphic Ltd. Registered in England and Wales, company number
+          <a href="https://find-and-update.company-information.service.gov.uk/company/17423646">17423646</a>.
+        </p>
+        <p>Registered office: 82A James Carter Road, Mildenhall, IP28 7DE.</p>
+        <p>Page last updated: <time datetime="2026-09-06">6 September 2026</time>.</p>
+      </div>
+      <nav aria-label="Legal">
         <a href="privacy.html">Privacy</a>
         <a href="cookies.html">Cookies</a>
         <a href="terms.html">Terms</a>

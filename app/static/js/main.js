@@ -14,15 +14,6 @@ window.Where = (function () {
     setTimeout(function () { b.classList.remove('armed'); b.textContent = label; }, 4000);
   });
 
-  var toggle = document.getElementById('theme-toggle');
-  if (toggle) {
-    toggle.addEventListener('click', function () {
-      var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = next;
-      try { localStorage.setItem('theme', next); } catch (e) {}
-    });
-  }
-
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function () {});
   }

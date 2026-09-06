@@ -83,4 +83,4 @@ no build step.
 - Changelog: https://github.com/lightmorphic/where/blob/main/CHANGELOG.md
 - Issues: https://github.com/lightmorphic/where/issues
 - Licence: GPL-3.0
-- Contact: hello@lightmorphic.co.uk
+- Contact: see the privacy, terms and complaints pages on the site
